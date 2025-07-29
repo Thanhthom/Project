@@ -1,0 +1,206 @@
+.episodes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.episodes-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+}
+
+.accordion-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.season-item {
+  border-bottom: 1px solid #374151;
+}
+
+.season-header {
+  width: 100%;
+}
+
+.season-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.season-toggle:hover {
+  color: #ef4444;
+}
+
+.season-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: white;
+  text-align: left;
+}
+
+.season-toggle:hover .season-title {
+  color: #ef4444;
+}
+
+.chevron-icon {
+  width: 16px;
+  height: 16px;
+  color: white;
+  transition: transform 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.season-toggle.open .chevron-icon {
+  transform: rotate(180deg);
+  color: #ef4444;
+}
+
+.season-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.season-content.open {
+  max-height: 1000px; 
+}
+
+.episodes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 16px;
+}
+
+.episode-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: #1f2937;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.episode-item:hover {
+  background-color: #374151;
+}
+
+.episode-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.episode-number {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  min-width: 24px;
+}
+
+.episode-title {
+  color: white;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.episode-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.episode-duration {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.play-episode-button {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.play-episode-button:hover {
+  color: #dc2626;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.play-episode-icon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .episodes-title {
+    font-size: 1.25rem;
+  }
+
+  .season-title {
+    font-size: 1rem;
+  }
+
+  .episode-item {
+    padding: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .episode-info {
+    width: 100%;
+  }
+
+  .episode-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .episode-title {
+    font-size: 0.8rem;
+  }
+
+  .episode-duration,
+  .episode-number {
+    font-size: 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .season-content {
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .chevron-icon {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+.season-toggle:focus {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
+.play-episode-button:focus {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
