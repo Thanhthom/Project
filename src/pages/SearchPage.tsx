@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { ContentCard } from "../components/ContentCard"
 import { fetchSearchMovies, getImageUrl, formatRuntime, formatDate } from "../config/api"
@@ -87,7 +85,7 @@ export function SearchPage({ searchQuery, onNavigateToDetail }: SearchPageProps)
     <main className="search-page">
       <div className="search-results-header">
         <h2 className="search-results-title">
-          Search Results for "{searchQuery}" ({searchResults.length} results)
+          Search results for "{searchQuery}"
         </h2>
       </div>
       {searchResults.length > 0 ? (

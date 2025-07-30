@@ -83,6 +83,9 @@
 // }
 // TMDB API configuration
 // TMDB API configuration
+
+
+// TMDB API configuration
 const API_KEY = import.meta.env.VITE_API_KEY
 console.log("VITE_API_KEY loaded:", API_KEY ? "Yes" : "No", API_KEY ? API_KEY.substring(0, 5) + "..." : "N/A")
 const BASE_URL = "https://api.themoviedb.org/3"
@@ -95,12 +98,17 @@ export const API_ENDPOINTS = {
   TOP_RATED_MOVIES: `${BASE_URL}/movie/top_rated?api_key=${API_KEY}`,
   MOVIE_GENRES: `${BASE_URL}/genre/movie/list?api_key=${API_KEY}`,
   TV_GENRES: `${BASE_URL}/genre/tv/list?api_key=${API_KEY}`,
-  MOVIE_DETAILS: (id: number) => `${BASE_URL}/movie/${id}?api_key=${API_KEY}`,
+  MOVIE_DETAILS: (id: number) => `${BASE_URL}/movie/${id}?api_key=${API_KEY}`, // Endpoint này trả về runtime
   TV_DETAILS: (id: number) => `${BASE_URL}/tv/${id}?api_key=${API_KEY}`,
   SEARCH_MOVIES: (query: string) => `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`,
-  DISCOVER_MOVIES_BY_GENRE: (genreIds: number[]) => {
+  DISCOVER_MOVIES_BY_GENRE: (genreIds: number[], page = 1) => {
     const genreString = genreIds.join(",")
-    return `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreString}`
+    return `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreString}&page=${page}`
+  },
+  DISCOVER_MOVIES_BY_COUNTRY: (countryCodes: string[], page = 1) => {
+    // Endpoint mới cho quốc gia
+    const countryString = countryCodes.join("|") // TMDB sử dụng | cho logic OR giữa các quốc gia
+    return `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_origin_country=${countryString}&page=${page}`
   },
 }
 
@@ -175,13 +183,35 @@ export const fetchMovieDetails = async (id: number) => {
   }
 }
 
-export const fetchMoviesByGenres = async (genreIds: number[]) => {
+// Hàm fetch mới để lấy chi tiết phim bao gồm runtime
+interface MediaItem {
+  // Define the properties of MediaItem here
+  id: number
+  title?: string
+  name?: string
+  runtime?: number
+  // Add other properties as needed
+}
+
+export const fetchMovieWithRuntime = async (id: number): Promise<MediaItem | null> => {
+  try {
+    const response = await fetch(API_ENDPOINTS.MOVIE_DETAILS(id))
+    if (!response.ok) throw new Error(`Failed to fetch movie details for runtime: ${response.statusText}`)
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error(`Error fetching runtime for movie ${id}:`, error)
+    return null
+  }
+}
+
+export const fetchMoviesByGenres = async (genreIds: number[], page = 1) => {
   if (genreIds.length === 0) {
     console.log("fetchMoviesByGenres: No genre IDs provided, returning empty array.")
     return []
   }
   try {
-    const url = API_ENDPOINTS.DISCOVER_MOVIES_BY_GENRE(genreIds)
+    const url = API_ENDPOINTS.DISCOVER_MOVIES_BY_GENRE(genreIds, page) // Truyền tham số page
     console.log("fetchMoviesByGenres: Fetching from URL:", url)
     const response = await fetch(url)
     if (!response.ok) throw new Error(`Failed to fetch movies by genres: ${response.statusText}`)
@@ -210,6 +240,26 @@ export const fetchSearchMovies = async (query: string) => {
     return data.results
   } catch (error) {
     console.error("Error fetching search results:", error)
+    return []
+  }
+}
+
+export const fetchMoviesByCountries = async (countryCodes: string[], page = 1) => {
+  // Hàm fetch mới cho quốc gia
+  if (countryCodes.length === 0) {
+    console.log("fetchMoviesByCountries: No country codes provided, returning empty array.")
+    return []
+  }
+  try {
+    const url = API_ENDPOINTS.DISCOVER_MOVIES_BY_COUNTRY(countryCodes, page)
+    console.log("fetchMoviesByCountries: Fetching from URL:", url)
+    const response = await fetch(url)
+    if (!response.ok) throw new Error(`Failed to fetch movies by countries: ${response.statusText}`)
+    const data = await response.json()
+    console.log("fetchMoviesByCountries: API response results:", data.results)
+    return data.results
+  } catch (error) {
+    console.error("Error fetching movies by countries:", error)
     return []
   }
 }

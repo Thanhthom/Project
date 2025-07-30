@@ -1461,19 +1461,31 @@
 
 
 
-import type React from "react"
 
+import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { Search, Menu, Bell, ChevronDown, Check } from "lucide-react"
-import { fetchMovieGenres } from "../config/api"
+import { fetchMovieGenres, fetchSearchMovies, getImageUrl } from "../config/api" // Import getImageUrl
+import type { MediaItem } from "../types/movie" // Import MediaItem type
 import "./Header.css"
 
-interface HeaderProps {
-  onNavigate: (page: "home" | "detail" | "search", query?: string) => void 
-  onGenreChange: (genres: number[]) => void
+// Add debounce utility function
+const debounce = (func: (...args: any[]) => void, delay: number) => {
+  let timeout: NodeJS.Timeout
+  return (...args: any[]) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), delay)
+  }
 }
 
-export function Header({ onNavigate, onGenreChange }: HeaderProps) {
+interface HeaderProps {
+  onNavigate: (
+    page: "home" | "detail" | "search" | "genre-results" | "country-results",
+    idOrQueryOrGenres?: string | number[] | string[],
+  ) => void
+}
+
+export function Header({ onNavigate }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false)
   const [showGenreDropdown, setShowGenreDropdown] = useState(false)
   const [showCountryDropdown, setShowCountryDropdown] = useState(false)
@@ -1482,10 +1494,14 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
   const [selectedCountries, setSelectedCountries] = useState<string[]>([])
   const [genreSearchQuery, setGenreSearchQuery] = useState("")
   const [countrySearchQuery, setCountrySearchQuery] = useState("")
-  const [searchQuery, setSearchQuery] = useState("") 
+  const [searchQuery, setSearchQuery] = useState("")
+  // New states for search suggestions
+  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false)
+  const [searchSuggestions, setSearchSuggestions] = useState<MediaItem[]>([])
 
   const genreDropdownRef = useRef<HTMLDivElement>(null)
   const countryDropdownRef = useRef<HTMLDivElement>(null)
+  const searchInputRef = useRef<HTMLDivElement>(null) // New ref for search input container
 
   const countries = [
     {
@@ -1675,7 +1691,7 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     },
     {
       iso_3166_1: "CC",
-      english_name: "Cocos  Islands",
+      english_name: "Cocos Islands",
       native_name: "Cocos (Keeling) Islands",
     },
     {
@@ -1750,8 +1766,7 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     },
     {
       iso_3166_1: "CX",
-      english_name: "Christmas Island",
-      native_name: "Christmas Island",
+      english_name: "Christmas Island", // Added missing english_name
     },
     {
       iso_3166_1: "CY",
@@ -1926,7 +1941,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "GS",
       english_name: "South Georgia and the South Sandwich Islands",
-      native_name: "South Georgia & South Sandwich Islands",
     },
     {
       iso_3166_1: "GT",
@@ -1955,8 +1969,7 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     },
     {
       iso_3166_1: "HM",
-      english_name: "Heard and McDonald Islands",
-      native_name: "Heard & McDonald Islands",
+      english_name: "Heard Island and McDonald Islands", // Added missing english_name
     },
     {
       iso_3166_1: "HN",
@@ -2001,7 +2014,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "IO",
       english_name: "British Indian Ocean Territory",
-      native_name: "British Indian Ocean Territory",
     },
     {
       iso_3166_1: "IQ",
@@ -2066,7 +2078,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "KN",
       english_name: "St. Kitts and Nevis",
-      native_name: "St. Kitts & Nevis",
     },
     {
       iso_3166_1: "KP",
@@ -2096,7 +2107,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "LA",
       english_name: "Lao People's Democratic Republic",
-      native_name: "Laos",
     },
     {
       iso_3166_1: "LB",
@@ -2146,7 +2156,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "LY",
       english_name: "Libyan Arab Jamahiriya",
-      native_name: "Libya",
     },
     {
       iso_3166_1: "MA",
@@ -2176,7 +2185,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "MH",
       english_name: "Marshall Islands",
-      native_name: "Marshall Islands",
     },
     {
       iso_3166_1: "MK",
@@ -2206,7 +2214,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "MP",
       english_name: "Northern Mariana Islands",
-      native_name: "Northern Mariana Islands",
     },
     {
       iso_3166_1: "MQ",
@@ -2361,22 +2368,18 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "PM",
       english_name: "St. Pierre and Miquelon",
-      native_name: "St. Pierre & Miquelon",
     },
     {
       iso_3166_1: "PN",
       english_name: "Pitcairn Island",
-      native_name: "Pitcairn Islands",
     },
     {
       iso_3166_1: "PR",
       english_name: "Puerto Rico",
-      native_name: "Puerto Rico",
     },
     {
       iso_3166_1: "PS",
       english_name: "Palestinian Territory",
-      native_name: "Palestinian Territories",
     },
     {
       iso_3166_1: "PT",
@@ -2431,7 +2434,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "SB",
       english_name: "Solomon Islands",
-      native_name: "Solomon Islands",
     },
     {
       iso_3166_1: "SC",
@@ -2466,7 +2468,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "SJ",
       english_name: "Svalbard & Jan Mayen Islands",
-      native_name: "Svalbard & Jan Mayen",
     },
     {
       iso_3166_1: "SK",
@@ -2506,7 +2507,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "ST",
       english_name: "Sao Tome and Principe",
-      native_name: "São Tomé & Príncipe",
     },
     {
       iso_3166_1: "SU",
@@ -2526,12 +2526,10 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "SZ",
       english_name: "Swaziland",
-      native_name: "Eswatini (Swaziland)",
     },
     {
       iso_3166_1: "TC",
       english_name: "Turks and Caicos Islands",
-      native_name: "Turks & Caicos Islands",
     },
     {
       iso_3166_1: "TD",
@@ -2541,7 +2539,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "TF",
       english_name: "French Southern Territories",
-      native_name: "French Southern Territories",
     },
     {
       iso_3166_1: "TG",
@@ -2596,7 +2593,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "TT",
       english_name: "Trinidad and Tobago",
-      native_name: "Trinidad & Tobago",
     },
     {
       iso_3166_1: "TV",
@@ -2626,7 +2622,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "UM",
       english_name: "United States Minor Outlying Islands",
-      native_name: "U.S. Outlying Islands",
     },
     {
       iso_3166_1: "US",
@@ -2651,7 +2646,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "VC",
       english_name: "St. Vincent and the Grenadines",
-      native_name: "St. Vincent & Grenadines",
     },
     {
       iso_3166_1: "VE",
@@ -2661,12 +2655,10 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "VG",
       english_name: "British Virgin Islands",
-      native_name: "British Virgin Islands",
     },
     {
       iso_3166_1: "VI",
       english_name: "US Virgin Islands",
-      native_name: "U.S. Virgin Islands",
     },
     {
       iso_3166_1: "VN",
@@ -2681,7 +2673,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "WF",
       english_name: "Wallis and Futuna Islands",
-      native_name: "Wallis & Futuna",
     },
     {
       iso_3166_1: "WS",
@@ -2701,7 +2692,6 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     {
       iso_3166_1: "XI",
       english_name: "Northern Ireland",
-      native_name: "Northern Ireland",
     },
     {
       iso_3166_1: "XK",
@@ -2745,6 +2735,23 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     },
   ]
 
+  // Debounced function for fetching search suggestions
+  const debouncedFetchSuggestions = useRef(
+    debounce(async (query: string) => {
+      if (query.trim() === "") {
+        setSearchSuggestions([])
+        return
+      }
+      try {
+        const results = await fetchSearchMovies(query)
+        setSearchSuggestions(results.slice(0, 5)) // Limit to top 5 suggestions
+      } catch (error) {
+        console.error("Error fetching search suggestions:", error)
+        setSearchSuggestions([])
+      }
+    }, 300), // 300ms debounce
+  ).current
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50)
@@ -2762,6 +2769,9 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     handleScroll()
     loadGenres()
 
+    // Make countries list globally accessible for CountryResultsPage
+    ;(window as any).countriesList = countries
+
     window.addEventListener("scroll", handleScroll)
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -2773,24 +2783,65 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
         setShowCountryDropdown(false)
         setCountrySearchQuery("")
       }
+      // New: Handle click outside for search suggestions
+      if (searchInputRef.current && !searchInputRef.current.contains(event.target as Node)) {
+        setShowSearchSuggestions(false)
+        setSearchSuggestions([]) // Clear suggestions when closing
+      }
     }
     document.addEventListener("mousedown", handleClickOutside)
+
+    const handleGlobalKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        if (showGenreDropdown && selectedGenres.length > 0) {
+          event.preventDefault()
+          console.log("Header: Global Enter pressed for genres, navigating to genre results with:", selectedGenres)
+          onNavigate("genre-results", selectedGenres)
+          setSelectedGenres([])
+          setShowGenreDropdown(false)
+          setGenreSearchQuery("")
+        } else if (showCountryDropdown && selectedCountries.length > 0) {
+          // New: Handle global Enter for countries
+          event.preventDefault()
+          console.log(
+            "Header: Global Enter pressed for countries, navigating to country results with:",
+            selectedCountries,
+          )
+          onNavigate("country-results", selectedCountries)
+          setSelectedCountries([])
+          setShowCountryDropdown(false)
+          setCountrySearchQuery("")
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleGlobalKeyDown)
 
     return () => {
       window.removeEventListener("scroll", handleScroll)
       document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener("keydown", handleGlobalKeyDown)
     }
   }, [])
 
-  const handleGenreClick = (genreId: number, genreName: string) => {
+  const handleGenreClick = (genreId: number) => {
     setSelectedGenres((prevSelected) => {
-      const newSelected = prevSelected.includes(genreId)
-        ? prevSelected.filter((id) => id !== genreId)
-        : [...prevSelected, genreId]
-      onGenreChange(newSelected)
-      console.log(`Header: Toggled genre: ${genreName} (ID: ${genreId}). New selected genres:`, newSelected)
-      return newSelected
+      if (prevSelected.includes(genreId)) {
+        return prevSelected.filter((id) => id !== genreId)
+      } else {
+        return [...prevSelected, genreId]
+      }
     })
+  }
+
+  const handleGenreSearchSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && selectedGenres.length > 0) {
+      onNavigate("genre-results", selectedGenres)
+      setSelectedGenres([])
+      setShowGenreDropdown(false)
+      setGenreSearchQuery("")
+      console.log("Header: Navigating to genre results with:", selectedGenres)
+    }
   }
 
   const handleCountryClick = (countryCode: string, countryName: string) => {
@@ -2804,15 +2855,43 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     console.log(`Header: Toggled country: ${countryName} (Code: ${countryCode})`)
   }
 
+  const handleCountrySearchSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    // New: Handle Enter for country search
+    if (event.key === "Enter" && selectedCountries.length > 0) {
+      onNavigate("country-results", selectedCountries)
+      setSelectedCountries([])
+      setShowCountryDropdown(false)
+      setCountrySearchQuery("")
+      console.log("Header: Navigating to country results with:", selectedCountries)
+    }
+  }
+
   const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value)
+    const query = event.target.value
+    setSearchQuery(query)
+    if (query.trim().length > 0) {
+      setShowSearchSuggestions(true)
+      debouncedFetchSuggestions(query)
+    } else {
+      setShowSearchSuggestions(false)
+      setSearchSuggestions([])
+    }
   }
 
   const handleSearchSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && searchQuery.trim() !== "") {
       onNavigate("search", searchQuery.trim())
-      setSearchQuery("") 
+      setSearchQuery("")
+      setSearchSuggestions([]) // Clear suggestions after full search
+      setShowSearchSuggestions(false) // Hide dropdown
     }
+  }
+
+  const handleSuggestionClick = (id: string) => {
+    onNavigate("detail", id)
+    setSearchQuery("") // Clear search query
+    setSearchSuggestions([]) // Clear suggestions
+    setShowSearchSuggestions(false) // Hide dropdown
   }
 
   const filteredGenres = genres.filter((genre) => genre.name.toLowerCase().includes(genreSearchQuery.toLowerCase()))
@@ -2834,7 +2913,9 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
               onClick={() => {
                 setShowGenreDropdown(!showGenreDropdown)
                 setShowCountryDropdown(false)
+                setCountrySearchQuery("") // Close country dropdown
                 setGenreSearchQuery("")
+                setShowSearchSuggestions(false) // Close search suggestions
               }}
               aria-expanded={showGenreDropdown}
             >
@@ -2848,6 +2929,7 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
                   className="dropdown-search-input"
                   value={genreSearchQuery}
                   onChange={(e) => setGenreSearchQuery(e.target.value)}
+                  onKeyDown={handleGenreSearchSubmit}
                   onClick={(e) => e.stopPropagation()}
                 />
                 {filteredGenres.length > 0 ? (
@@ -2855,7 +2937,7 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
                     <button
                       key={genre.id}
                       className={`dropdown-item ${selectedGenres.includes(genre.id) ? "selected" : ""}`}
-                      onClick={() => handleGenreClick(genre.id, genre.name)}
+                      onClick={() => handleGenreClick(genre.id)}
                     >
                       {genre.name}
                       {selectedGenres.includes(genre.id) && <Check className="check-icon" />}
@@ -2873,7 +2955,9 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
               onClick={() => {
                 setShowCountryDropdown(!showCountryDropdown)
                 setShowGenreDropdown(false)
+                setGenreSearchQuery("") // Close genre dropdown
                 setCountrySearchQuery("")
+                setShowSearchSuggestions(false) // Close search suggestions
               }}
               aria-expanded={showCountryDropdown}
             >
@@ -2887,6 +2971,7 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
                   className="dropdown-search-input"
                   value={countrySearchQuery}
                   onChange={(e) => setCountrySearchQuery(e.target.value)}
+                  onKeyDown={handleCountrySearchSubmit} // Add onKeyDown for country search
                   onClick={(e) => e.stopPropagation()}
                 />
                 {filteredCountries.length > 0 ? (
@@ -2909,7 +2994,7 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
         </nav>
       </div>
       <div className="right">
-        <div className="search-wrapper">
+        <div className="search-wrapper" ref={searchInputRef}>
           <Search className="search-icon" />
           <input
             type="search"
@@ -2919,6 +3004,33 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
             onChange={handleSearchInputChange}
             onKeyDown={handleSearchSubmit}
           />
+          {showSearchSuggestions && (searchSuggestions.length > 0 || searchQuery.trim().length > 0) && (
+            <div className="search-suggestions-dropdown">
+              {searchSuggestions.length > 0 ? (
+                searchSuggestions.map((movie) => (
+                  <button
+                    key={movie.id}
+                    className="suggestion-item"
+                    onClick={() => handleSuggestionClick(movie.id.toString())}
+                  >
+                    {movie.poster_path && (
+                      <img
+                        src={getImageUrl(movie.poster_path, "w92") || "/placeholder.svg"} // Use w92 for small poster
+                        alt={movie.title || movie.name}
+                        className="suggestion-image"
+                        onError={(e) => {
+                          e.currentTarget.src = "/placeholder.png" // Fallback image
+                        }}
+                      />
+                    )}
+                    <span className="suggestion-title">{movie.title || movie.name}</span>
+                  </button>
+                ))
+              ) : (
+                <div className="no-results">No suggestions found.</div>
+              )}
+            </div>
+          )}
         </div>
         <nav className="nav-bar">
           <a href="#" onClick={() => onNavigate("home")} className="nav-link">
@@ -2942,3 +3054,4 @@ export function Header({ onNavigate, onGenreChange }: HeaderProps) {
     </header>
   )
 }
+
