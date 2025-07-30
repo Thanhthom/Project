@@ -1,4 +1,4 @@
-/* .header {
+.header {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,135 +36,6 @@
   font-weight: 600;
   transition: color 0.3s;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.nav-link:hover {
-  color: pink;
-}
-
-.right {
-  display: flex;
-  align-items: center;
-  gap: 80px;
-}
-
-.search-wrapper {
-  width: 400px;
-  max-width: 100%;
-  height: auto;
-  display: flex;
-  align-items: center;
-  background-color: white;
-  border: 1px solid white;
-  border-radius: 20px;
-  padding: 4px 8px;
-}
-
-.search-icon {
-  color: #888;
-  margin-right: 6px;
-  width: 16px;
-  height: 16px;
-}
-
-.search-input {
-  background: transparent;
-  border: none;
-  color: #000;
-  outline: none;
-  flex: 1;
-  padding: 8px;
-}
-
-.notification-icon {
-  color: #fff;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.notification-icon:hover {
-  color: #ef4444;
-}
-
-.menu-button {
-  background: none;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-}
-
-.menu-icon {
-  width: 20px;
-  height: 20px;
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .nav-bar {
-    display: none;
-  }
-
-  .menu-icon {
-    display: block;
-  }
-
-  .header {
-    justify-content: space-between;
-    padding: 0 16px;
-  }
-
-  .search-wrapper {
-    width: 100%;
-    max-width: calc(100% - 60px);
-  }
-
-  .right {
-    gap: 20px;
-  }
-} */
-
-
-.header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  height: 70px;
-  background-color: transparent; /* Mặc định là trong suốt */
-  gap: 60px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  box-shadow: none; /* Mặc định không có bóng đổ */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Thêm transition cho hiệu ứng mượt mà */
-}
-
-/* Class mới khi header được cuộn */
-.header.header-scrolled {
-  background-color: #000; /* Nền đen khi cuộn */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Thêm bóng đổ khi cuộn */
-}
-
-.left {
-  display: flex;
-  align-items: center;
-}
-
-.nav-bar {
-  display: flex;
-  gap: 30px;
-}
-
-.nav-link {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: none;
   border: none;
   cursor: pointer;
@@ -175,7 +46,6 @@
   color: #ef4444;
 }
 
-/* Styles cho Dropdown Thể loại và Quốc gia */
 .nav-link-dropdown {
   position: relative;
   display: flex;
@@ -237,8 +107,8 @@
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
   font-size: 0.9rem;
-  display: flex; /* Để icon và text nằm cùng hàng */
-  justify-content: space-between; /* Đẩy icon sang phải */
+  display: flex; 
+  justify-content: space-between; 
   align-items: center;
 }
 
@@ -247,9 +117,8 @@
   color: #fff;
 }
 
-/* Style cho mục đã chọn */
 .dropdown-item.selected {
-  background-color: #374151; /* Nền hơi khác để dễ nhận biết */
+  background-color: #374151; 
   color: #fff;
   font-weight: 600;
 }
@@ -257,8 +126,8 @@
 .check-icon {
   width: 16px;
   height: 16px;
-  color: #4caf50; /* Màu xanh lá cây cho dấu tích */
-  margin-left: 10px; /* Khoảng cách với text */
+  color: #4caf50; 
+  margin-left: 10px; 
 }
 
 .right {

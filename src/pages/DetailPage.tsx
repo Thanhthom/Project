@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { Heart, Star, Play, Clock } from "lucide-react"
 import { getImageUrl, formatDate, formatRuntime } from "../config/api"
