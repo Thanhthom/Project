@@ -1576,6 +1576,7 @@ export function Header({ onNavigate }: HeaderProps) {
     },
     {
       iso_3166_1: "AW",
+
       english_name: "Aruba",
       native_name: "Aruba",
     },
