@@ -4,26 +4,26 @@ import { HomePage } from "./pages/HomePage"
 import { DetailPage } from "./pages/DetailPage"
 import { SearchPage } from "./pages/SearchPage"
 import { GenreResultsPage } from "./pages/GenreResultsPage"
-import { CountryResultsPage } from "./pages/CountryResultsPage" 
-
+import { CountryResultsPage } from "./pages/CountryResultsPage" // Import trang quốc gia mới
+import { MoviesPage } from "./pages/MoviesPage"
 function App() {
-  const [currentPage, setCurrentPage] = useState<"home" | "detail" | "search" | "genre-results" | "country-results">(
-    "home",
-  ) 
+  const [currentPage, setCurrentPage] = useState<
+    "home" | "detail" | "search" | "genre-results" | "country-results" | "movies"
+  >("home")
   const [currentDetailId, setCurrentDetailId] = useState<string | null>(null)
   const [currentSearchQuery, setCurrentSearchQuery] = useState<string | null>(null)
   const [currentGenreIds, setCurrentGenreIds] = useState<number[] | null>(null)
-  const [currentCountryCodes, setCurrentCountryCodes] = useState<string[] | null>(null) 
+  const [currentCountryCodes, setCurrentCountryCodes] = useState<string[] | null>(null)
 
   const handleNavigate = (
-    page: "home" | "detail" | "search" | "genre-results" | "country-results",
+    page: "home" | "detail" | "search" | "genre-results" | "country-results" | "movies",
     param?: string | number[] | string[],
   ) => {
     setCurrentPage(page)
     setCurrentDetailId(null)
     setCurrentSearchQuery(null)
     setCurrentGenreIds(null)
-    setCurrentCountryCodes(null) 
+    setCurrentCountryCodes(null)
 
     if (page === "detail") {
       setCurrentDetailId(param as string)
@@ -34,15 +34,7 @@ function App() {
     } else if (page === "country-results") {
       setCurrentCountryCodes(param as string[])
     }
-    console.log(`App.tsx: Navigating to ${page} with param:`, param)
-    console.log(
-      `App.tsx: Current Page after navigation: ${page}, Detail ID: ${currentDetailId}, Search Query: ${currentSearchQuery}, Genre IDs: ${currentGenreIds}, Country Codes: ${currentCountryCodes}`,
-    )
   }
-
-  console.log(
-    `App.tsx: Rendering - currentPage: ${currentPage}, currentDetailId: ${currentDetailId}, currentSearchQuery: ${currentSearchQuery}, currentGenreIds: ${currentGenreIds}, currentCountryCodes: ${currentCountryCodes}`,
-  )
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -54,16 +46,17 @@ function App() {
       ) : currentPage === "search" ? (
         <SearchPage searchQuery={currentSearchQuery} onNavigateToDetail={(id) => handleNavigate("detail", id)} />
       ) : currentPage === "genre-results" ? (
-        <GenreResultsPage genreIds={currentGenreIds} onNavigateToDetail={(id) => handleNavigate("detail", id)} /> // Hiển thị trang kết quả quốc gia
-      ) : (
+        <GenreResultsPage genreIds={currentGenreIds} onNavigateToDetail={(id) => handleNavigate("detail", id)} />
+      ) : currentPage === "country-results" ? (
         <CountryResultsPage
           countryCodes={currentCountryCodes}
           onNavigateToDetail={(id) => handleNavigate("detail", id)}
         />
-      )}
+      ) : currentPage === "movies" ? (
+        <MoviesPage onNavigateToDetail={(id) => handleNavigate("detail", id)} />
+      ) : null}
     </div>
   )
 }
 
 export default App
-

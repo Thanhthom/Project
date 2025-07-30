@@ -137,8 +137,8 @@
   width: 16px;
   height: 16px;
   color: #4caf50;
-  margin-left: auto; /* Push checkmark to the right */
-  flex-shrink: 0; /* Prevent icon from shrinking */
+  margin-left: auto; 
+  flex-shrink: 0; 
 }
 
 .no-results {
