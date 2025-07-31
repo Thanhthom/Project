@@ -19,7 +19,6 @@ export function CommentsSection({ comments }: CommentsSectionProps) {
     <div className="comments-section">
       <h2 className="comments-title">Comments</h2>
 
-      {/* Comment Input */}
       <div className="comment-input-section">
         <div className="user-avatar">
           <img src="/placeholder-user.png" alt="User Avatar" className="avatar-image" />
@@ -31,7 +30,6 @@ export function CommentsSection({ comments }: CommentsSectionProps) {
         </div>
       </div>
 
-      {/* Comments List */}
       <div className="comments-list">
         {comments.map((comment) => (
           <div key={comment.id} className="comment-item">

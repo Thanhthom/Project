@@ -1,14 +1,19 @@
+"use client"
+
 import { useState } from "react"
 import { Header } from "./components/Header"
 import { HomePage } from "./pages/HomePage"
 import { DetailPage } from "./pages/DetailPage"
 import { SearchPage } from "./pages/SearchPage"
 import { GenreResultsPage } from "./pages/GenreResultsPage"
-import { CountryResultsPage } from "./pages/CountryResultsPage" // Import trang quốc gia mới
+import { CountryResultsPage } from "./pages/CountryResultsPage"
 import { MoviesPage } from "./pages/MoviesPage"
+import { SeriesPage } from "./pages/SeriesPage"
+import { AnimationPage } from "./pages/AnimationPage"
+
 function App() {
   const [currentPage, setCurrentPage] = useState<
-    "home" | "detail" | "search" | "genre-results" | "country-results" | "movies"
+    "home" | "detail" | "search" | "genre-results" | "country-results" | "movies" | "series" | "animation"
   >("home")
   const [currentDetailId, setCurrentDetailId] = useState<string | null>(null)
   const [currentSearchQuery, setCurrentSearchQuery] = useState<string | null>(null)
@@ -16,7 +21,7 @@ function App() {
   const [currentCountryCodes, setCurrentCountryCodes] = useState<string[] | null>(null)
 
   const handleNavigate = (
-    page: "home" | "detail" | "search" | "genre-results" | "country-results" | "movies",
+    page: "home" | "detail" | "search" | "genre-results" | "country-results" | "movies" | "series" | "animation",
     param?: string | number[] | string[],
   ) => {
     setCurrentPage(page)
@@ -54,6 +59,10 @@ function App() {
         />
       ) : currentPage === "movies" ? (
         <MoviesPage onNavigateToDetail={(id) => handleNavigate("detail", id)} />
+      ) : currentPage === "series" ? (
+        <SeriesPage onNavigateToDetail={(id) => handleNavigate("detail", id)} />
+      ) : currentPage === "animation" ? (
+        <AnimationPage onNavigateToDetail={(id) => handleNavigate("detail", id)} />
       ) : null}
     </div>
   )
