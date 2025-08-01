@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { ContentCard } from "../components/ContentCard"
-import { fetchMoviesByCountries, getImageUrl, formatDate } from "../config/api"
+import { getImageUrl, formatDate } from "../config/api"
 import type { MediaItem } from "../types/movie"
 import { ContentCardSkeleton } from "../components/LoadingSkeleton"
 import "./CountryResultsPage.css"
@@ -17,8 +17,8 @@ export function CountryResultsPage({ countryCodes, onNavigateToDetail, initialPa
   const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(initialPage)
   const [totalPages, setTotalPages] = useState(1)
-  const getCountryNameFromCode = (code: string) => {
 
+  const getCountryNameFromCode = (code: string) => {
     const countriesList = (window as any).countriesList || []
     const country = countriesList.find((c: any) => c.iso_3166_1 === code)
     return country ? country.english_name : code
@@ -34,20 +34,37 @@ export function CountryResultsPage({ countryCodes, onNavigateToDetail, initialPa
 
       setLoading(true)
       setError(null)
-      try {
-        const firstPageResponse = await fetch(
-          `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_API_KEY}&with_origin_country=${countryCodes.join("|")}&page=1`,
-        )
-        if (!firstPageResponse.ok) throw new Error(`Failed to fetch initial movies: ${firstPageResponse.statusText}`)
-        const firstPageData = await firstPageResponse.json()
-        setTotalPages(firstPageData.total_pages)
 
-        let allMovies: MediaItem[] = []
-        for (let i = 1; i <= currentPage; i++) {
-          const movies = await fetchMoviesByCountries(countryCodes, i)
-          allMovies = [...allMovies, ...movies]
+      try {
+        console.log("Loading movies for countries:", countryCodes)
+
+        // Fetch movies by country using TMDB API
+        const countryString = countryCodes.join("|")
+        const apiKey = import.meta.env.VITE_API_KEY
+
+        if (!apiKey) {
+          throw new Error("API key is not configured")
         }
-        setCountryFilteredMovies(allMovies)
+
+        const url = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_origin_country=${countryString}&page=${currentPage}&sort_by=popularity.desc`
+        console.log("Fetching from URL:", url)
+
+        const response = await fetch(url)
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch movies: ${response.status} ${response.statusText}`)
+        }
+
+        const data = await response.json()
+        console.log("API response:", data)
+
+        setTotalPages(data.total_pages || 1)
+
+        if (currentPage === 1) {
+          setCountryFilteredMovies(data.results || [])
+        } else {
+          setCountryFilteredMovies((prev) => [...prev, ...(data.results || [])])
+        }
       } catch (err: any) {
         console.error("Error fetching country-filtered movies:", err)
         setError(err.message || "Failed to fetch movies for selected countries.")
@@ -83,7 +100,7 @@ export function CountryResultsPage({ countryCodes, onNavigateToDetail, initialPa
     }
   }
 
-  if (loading) {
+  if (loading && countryFilteredMovies.length === 0) {
     return (
       <main className="country-results-page">
         <div className="country-results-header">
@@ -104,6 +121,17 @@ export function CountryResultsPage({ countryCodes, onNavigateToDetail, initialPa
         <div className="error-container">
           <h2 className="error-title">Error</h2>
           <p className="error-message">{error}</p>
+          <div className="error-details">
+            <p>
+              <strong>Selected Countries:</strong> {selectedCountryNames}
+            </p>
+            <p>
+              <strong>Country Codes:</strong> {countryCodes?.join(", ") || "None"}
+            </p>
+            <p>
+              <strong>API Key:</strong> {import.meta.env.VITE_API_KEY ? "✓ Available" : "✗ Missing"}
+            </p>
+          </div>
           <button className="retry-button" onClick={() => window.location.reload()}>
             Try Again
           </button>
@@ -115,9 +143,8 @@ export function CountryResultsPage({ countryCodes, onNavigateToDetail, initialPa
   return (
     <main className="country-results-page">
       <div className="country-results-header">
-        <h2 className="country-results-title">
-          Movies for "{selectedCountryNames}"
-        </h2>
+        <h2 className="country-results-title">Movies from "{selectedCountryNames}"</h2>
+        <p className="results-count">Found {countryFilteredMovies.length} movies</p>
       </div>
       {countryFilteredMovies.length > 0 ? (
         <>
@@ -136,7 +163,10 @@ export function CountryResultsPage({ countryCodes, onNavigateToDetail, initialPa
           )}
         </>
       ) : (
-        <div className="no-results-message">No movies found for "{selectedCountryNames}".</div>
+        <div className="no-results-container">
+          <h3>No movies found for "{selectedCountryNames}"</h3>
+          <p>Try selecting different countries or check back later.</p>
+        </div>
       )}
     </main>
   )

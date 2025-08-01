@@ -131,7 +131,6 @@ export const formatRuntime = (minutes: number) => {
   return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`
 }
 
-// API fetch functions
 export const fetchTrendingMovies = async (page = 1) => {
   try {
     const response = await fetch(API_ENDPOINTS.TRENDING_MOVIES(page))
