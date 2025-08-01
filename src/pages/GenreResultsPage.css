@@ -2,7 +2,7 @@
   background-color: #000;
   color: white;
   min-height: 100vh;
-  padding-top: 70px; /* Đảm bảo nội dung không bị che bởi header */
+  padding-top: 70px;
   padding-left: 16px;
   padding-right: 16px;
   padding-bottom: 32px;
@@ -22,7 +22,7 @@
 }
 
 .genre-results-title {
-  font-size: 1.875rem; /* text-3xl */
+  font-size: 1.875rem; 
   font-weight: bold;
   color: white;
   margin: 0;
@@ -30,7 +30,7 @@
 
 @media (min-width: 768px) {
   .genre-results-title {
-    font-size: 2.25rem; /* text-4xl */
+    font-size: 2.25rem; 
   }
 }
 
@@ -72,13 +72,12 @@
   padding: 50px 0;
 }
 
-/* Re-using error-container and retry-button from HomePage.css/DetailPage.css */
 .error-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 70px); /* Adjust for header height */
+  min-height: calc(100vh - 70px); 
   text-align: center;
   padding: 32px;
 }

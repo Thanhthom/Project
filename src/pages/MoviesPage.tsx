@@ -119,7 +119,8 @@ export function MoviesPage({ onNavigateToDetail, initialPage = 1 }: MoviesPagePr
   return (
     <main className="movies-page">
       <div className="movies-header">
-        <h1 className="movies-title">All Movies ({movies.length} results)</h1>
+         <h1 className="series-title"></h1>
+        {/* <h1 className="movies-title">All Movies ({movies.length} results)</h1> */}
 
         <div className="sort-controls">
           <span className="sort-label">Sort by:</span>

@@ -196,7 +196,7 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
   return (
     <main className="animation-page">
       <div className="animation-header">
-        <h1 className="animation-title">All Animations ({animations.length} results)</h1>
+        {/* <h1 className="animation-title">All Animations ({animations.length} results)</h1> */}
 
         <div className="controls-container">
           <div className="content-type-controls">

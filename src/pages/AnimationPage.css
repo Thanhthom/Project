@@ -89,7 +89,7 @@
   color: #d1d5db;
   border: 1px solid #4b5563;
   padding: 8px 16px;
-  border-radius: 20px;
+  border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -260,7 +260,7 @@
 }
 
 .load-more-button:hover:not(:disabled) {
-  background: #ff5252;;
+  background: #ff5252;
   transform: translateY(-1px);
   box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
 }

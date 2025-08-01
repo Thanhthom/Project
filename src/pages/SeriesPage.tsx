@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { ContentCard } from "../components/ContentCard"
 import { getImageUrl, formatDate } from "../config/api"
@@ -61,8 +59,6 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
 
     loadSeries()
   }, [currentPage, sortBy, sortOrder])
-
-  // Reset to page 1 when sort changes
   useEffect(() => {
     if (currentPage !== 1) {
       setCurrentPage(1)
@@ -129,7 +125,8 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
   return (
     <main className="series-page">
       <div className="series-header">
-        <h1 className="series-title">All TV Series ({series.length} results)</h1>
+        <h1 className="series-title"></h1>
+        {/* <h1 className="series-title">All TV Series ({series.length} results)</h1> */}
 
         <div className="sort-controls">
           <span className="sort-label">Sort by:</span>

@@ -91,7 +91,6 @@ export function GenreResultsPage({ genreIds, onNavigateToDetail, initialPage = 1
   }
 
   if (loading && genreFilteredMovies.length === 0) {
-    // Only show full skeleton if no movies loaded yet
     return (
       <main className="genre-results-page">
         <div className="genre-results-header">

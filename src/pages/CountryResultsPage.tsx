@@ -35,7 +35,6 @@ export function CountryResultsPage({ countryCodes, onNavigateToDetail, initialPa
       setLoading(true)
       setError(null)
       try {
-        // Fetch first page to get total_pages
         const firstPageResponse = await fetch(
           `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_API_KEY}&with_origin_country=${countryCodes.join("|")}&page=1`,
         )
