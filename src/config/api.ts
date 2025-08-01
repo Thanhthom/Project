@@ -86,6 +86,7 @@
 
 
 // TMDB API configuration
+// TMDB API configuration
 const API_KEY = import.meta.env.VITE_API_KEY
 console.log("VITE_API_KEY loaded:", API_KEY ? "Yes" : "No", API_KEY ? API_KEY.substring(0, 5) + "..." : "N/A")
 const BASE_URL = "https://api.themoviedb.org/3"
@@ -93,21 +94,21 @@ const IMAGE_BASE_URL = "https://image.tmdb.org/t/p"
 
 // API endpoints
 export const API_ENDPOINTS = {
-  TRENDING_MOVIES: `${BASE_URL}/trending/movie/day?api_key=${API_KEY}`,
-  POPULAR_MOVIES: `${BASE_URL}/movie/popular?api_key=${API_KEY}`,
-  TOP_RATED_MOVIES: `${BASE_URL}/movie/top_rated?api_key=${API_KEY}`,
+  TRENDING_MOVIES: (page = 1) => `${BASE_URL}/trending/movie/day?api_key=${API_KEY}&page=${page}`,
+  POPULAR_MOVIES: (page = 1) => `${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`,
+  TOP_RATED_MOVIES: (page = 1) => `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&page=${page}`, // Added
   MOVIE_GENRES: `${BASE_URL}/genre/movie/list?api_key=${API_KEY}`,
   TV_GENRES: `${BASE_URL}/genre/tv/list?api_key=${API_KEY}`,
-  MOVIE_DETAILS: (id: number) => `${BASE_URL}/movie/${id}?api_key=${API_KEY}`, // Endpoint này trả về runtime
+  MOVIE_DETAILS: (id: number) => `${BASE_URL}/movie/${id}?api_key=${API_KEY}`,
   TV_DETAILS: (id: number) => `${BASE_URL}/tv/${id}?api_key=${API_KEY}`,
-  SEARCH_MOVIES: (query: string) => `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`,
+  SEARCH_MOVIES: (query: string, page = 1) =>
+    `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query.trim())}&page=${page}`,
   DISCOVER_MOVIES_BY_GENRE: (genreIds: number[], page = 1) => {
     const genreString = genreIds.join(",")
     return `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreString}&page=${page}`
   },
   DISCOVER_MOVIES_BY_COUNTRY: (countryCodes: string[], page = 1) => {
-    // Endpoint mới cho quốc gia
-    const countryString = countryCodes.join("|") // TMDB sử dụng | cho logic OR giữa các quốc gia
+    const countryString = countryCodes.join("|")
     return `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_origin_country=${countryString}&page=${page}`
   },
 }
@@ -131,27 +132,39 @@ export const formatRuntime = (minutes: number) => {
 }
 
 // API fetch functions
-export const fetchTrendingMovies = async () => {
+export const fetchTrendingMovies = async (page = 1) => {
   try {
-    const response = await fetch(API_ENDPOINTS.TRENDING_MOVIES)
+    const response = await fetch(API_ENDPOINTS.TRENDING_MOVIES(page))
     if (!response.ok) throw new Error("Failed to fetch trending movies")
     const data = await response.json()
-    return data.results
+    return { results: data.results, total_pages: data.total_pages }
   } catch (error) {
     console.error("Error fetching trending movies:", error)
-    return []
+    return { results: [], total_pages: 0 }
   }
 }
 
-export const fetchPopularMovies = async () => {
+export const fetchPopularMovies = async (page = 1) => {
   try {
-    const response = await fetch(API_ENDPOINTS.POPULAR_MOVIES)
+    const response = await fetch(API_ENDPOINTS.POPULAR_MOVIES(page))
     if (!response.ok) throw new Error("Failed to fetch popular movies")
     const data = await response.json()
-    return data.results
+    return { results: data.results, total_pages: data.total_pages }
   } catch (error) {
     console.error("Error fetching popular movies:", error)
-    return []
+    return { results: [], total_pages: 0 }
+  }
+}
+
+export const fetchTopRatedMovies = async (page = 1) => {
+  try {
+    const response = await fetch(API_ENDPOINTS.TOP_RATED_MOVIES(page))
+    if (!response.ok) throw new Error("Failed to fetch top rated movies")
+    const data = await response.json()
+    return { results: data.results, total_pages: data.total_pages }
+  } catch (error) {
+    console.error("Error fetching top rated movies:", error)
+    return { results: [], total_pages: 0 }
   }
 }
 
@@ -183,14 +196,12 @@ export const fetchMovieDetails = async (id: number) => {
   }
 }
 
-// Hàm fetch mới để lấy chi tiết phim bao gồm runtime
 interface MediaItem {
-  // Define the properties of MediaItem here
   id: number
   title?: string
   name?: string
   runtime?: number
-  // Add other properties as needed
+  poster_path?: string
 }
 
 export const fetchMovieWithRuntime = async (id: number): Promise<MediaItem | null> => {
@@ -208,47 +219,53 @@ export const fetchMovieWithRuntime = async (id: number): Promise<MediaItem | nul
 export const fetchMoviesByGenres = async (genreIds: number[], page = 1) => {
   if (genreIds.length === 0) {
     console.log("fetchMoviesByGenres: No genre IDs provided, returning empty array.")
-    return []
+    return { results: [], total_pages: 0 }
   }
   try {
-    const url = API_ENDPOINTS.DISCOVER_MOVIES_BY_GENRE(genreIds, page) // Truyền tham số page
+    const url = API_ENDPOINTS.DISCOVER_MOVIES_BY_GENRE(genreIds, page)
     console.log("fetchMoviesByGenres: Fetching from URL:", url)
     const response = await fetch(url)
     if (!response.ok) throw new Error(`Failed to fetch movies by genres: ${response.statusText}`)
     const data = await response.json()
     console.log("fetchMoviesByGenres: API response results:", data.results)
-    return data.results
+    return { results: data.results, total_pages: data.total_pages }
   } catch (error) {
     console.error("Error fetching movies by genres:", error)
-    return []
+    return { results: [], total_pages: 0 }
   }
 }
 
-// Hàm fetch mới để tìm kiếm phim
-export const fetchSearchMovies = async (query: string) => {
-  if (!query) {
+export const fetchSearchMovies = async (query: string, page = 1) => {
+  if (!query || query.trim() === "") {
     console.log("fetchSearchMovies: No query provided, returning empty array.")
     return []
   }
+
   try {
-    const url = API_ENDPOINTS.SEARCH_MOVIES(query)
+    const encodedQuery = encodeURIComponent(query.trim())
+    const url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodedQuery}&page=${page}`
     console.log("fetchSearchMovies: Fetching from URL:", url)
+
     const response = await fetch(url)
-    if (!response.ok) throw new Error(`Failed to fetch search results: ${response.statusText}`)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
     const data = await response.json()
-    console.log("fetchSearchMovies: API response results:", data.results)
-    return data.results
+    console.log("fetchSearchMovies: API response:", data)
+    const filteredResults = data.results.filter((movie: MediaItem) => movie.poster_path && (movie.title || movie.name))
+
+    return filteredResults || []
   } catch (error) {
     console.error("Error fetching search results:", error)
-    return []
+    throw new Error(`Failed to search movies: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }
 
 export const fetchMoviesByCountries = async (countryCodes: string[], page = 1) => {
-  // Hàm fetch mới cho quốc gia
   if (countryCodes.length === 0) {
     console.log("fetchMoviesByCountries: No country codes provided, returning empty array.")
-    return []
+    return { results: [], total_pages: 0 }
   }
   try {
     const url = API_ENDPOINTS.DISCOVER_MOVIES_BY_COUNTRY(countryCodes, page)
@@ -257,9 +274,9 @@ export const fetchMoviesByCountries = async (countryCodes: string[], page = 1) =
     if (!response.ok) throw new Error(`Failed to fetch movies by countries: ${response.statusText}`)
     const data = await response.json()
     console.log("fetchMoviesByCountries: API response results:", data.results)
-    return data.results
+    return { results: data.results, total_pages: data.total_pages }
   } catch (error) {
     console.error("Error fetching movies by countries:", error)
-    return []
+    return { results: [], total_pages: 0 }
   }
 }

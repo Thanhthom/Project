@@ -6,7 +6,6 @@ import type { MediaItem } from "../types/movie"
 import { LoginModal } from "./LoginModal"
 import "./Header.css"
 
-// Add debounce utility function
 const debounce = (func: (...args: any[]) => void, delay: number) => {
   let timeout: NodeJS.Timeout
   return (...args: any[]) => {
@@ -59,7 +58,6 @@ export function Header({ onNavigate }: HeaderProps) {
     }
   }
 
-  // Debounced function for fetching search suggestions
   const debouncedFetchSuggestions = useRef(
     debounce(async (query: string) => {
       if (query.trim() === "") {
@@ -68,12 +66,12 @@ export function Header({ onNavigate }: HeaderProps) {
       }
       try {
         const results = await fetchSearchMovies(query)
-        setSearchSuggestions(results.slice(0, 5)) // Limit to top 5 suggestions
+        setSearchSuggestions(results.slice(0, 5)) 
       } catch (error) {
         console.error("Error fetching search suggestions:", error)
         setSearchSuggestions([])
       }
-    }, 300), // 300ms debounce
+    }, 300), 
   ).current
 
   useEffect(() => {
@@ -81,7 +79,6 @@ export function Header({ onNavigate }: HeaderProps) {
       setScrolled(window.scrollY > 20)
     }
 
-    // Check initial scroll position
     handleScroll()
 
     // Add scroll listener
@@ -114,7 +111,6 @@ export function Header({ onNavigate }: HeaderProps) {
         setShowCountryDropdown(false)
         setCountrySearchQuery("")
       }
-      // New: Handle click outside for search suggestions
       if (searchInputRef.current && !searchInputRef.current.contains(event.target as Node)) {
         setShowSearchSuggestions(false)
         setSearchSuggestions([]) // Clear suggestions when closing
@@ -215,16 +211,16 @@ export function Header({ onNavigate }: HeaderProps) {
     if (event.key === "Enter" && searchQuery.trim() !== "") {
       onNavigate("search", searchQuery.trim())
       setSearchQuery("")
-      setSearchSuggestions([]) // Clear suggestions after full search
-      setShowSearchSuggestions(false) // Hide dropdown
+      setSearchSuggestions([]) 
+      setShowSearchSuggestions(false) 
     }
   }
 
   const handleSuggestionClick = (id: string) => {
     onNavigate("detail", id)
-    setSearchQuery("") // Clear search query
-    setSearchSuggestions([]) // Clear suggestions
-    setShowSearchSuggestions(false) // Hide dropdown
+    setSearchQuery("") 
+    setSearchSuggestions([]) 
+    setShowSearchSuggestions(false) 
   }
 
   const filteredGenres = genres.filter((genre) => genre.name.toLowerCase().includes(genreSearchQuery.toLowerCase()))
@@ -253,9 +249,9 @@ export function Header({ onNavigate }: HeaderProps) {
                 onClick={() => {
                   setShowGenreDropdown(!showGenreDropdown)
                   setShowCountryDropdown(false)
-                  setCountrySearchQuery("") // Close country dropdown
+                  setCountrySearchQuery("") 
                   setGenreSearchQuery("")
-                  setShowSearchSuggestions(false) // Close search suggestions
+                  setShowSearchSuggestions(false) 
                 }}
                 aria-expanded={showGenreDropdown}
               >
@@ -295,9 +291,9 @@ export function Header({ onNavigate }: HeaderProps) {
                 onClick={() => {
                   setShowCountryDropdown(!showCountryDropdown)
                   setShowGenreDropdown(false)
-                  setGenreSearchQuery("") // Close genre dropdown
+                  setGenreSearchQuery("") 
                   setCountrySearchQuery("")
-                  setShowSearchSuggestions(false) // Close search suggestions
+                  setShowSearchSuggestions(false) 
                 }}
                 aria-expanded={showCountryDropdown}
               >
@@ -305,13 +301,14 @@ export function Header({ onNavigate }: HeaderProps) {
               </button>
               {showCountryDropdown && (
                 <div className="dropdown-content">
+
                   <input
                     type="text"
                     placeholder="Search countries..."
                     className="dropdown-search-input"
                     value={countrySearchQuery}
                     onChange={(e) => setCountrySearchQuery(e.target.value)}
-                    onKeyDown={handleCountrySearchSubmit} // Add onKeyDown for country search
+                    onKeyDown={handleCountrySearchSubmit} 
                     onClick={(e) => e.stopPropagation()}
                   />
                   {filteredCountries.length > 0 ? (
@@ -355,11 +352,11 @@ export function Header({ onNavigate }: HeaderProps) {
                     >
                       {movie.poster_path && (
                         <img
-                          src={getImageUrl(movie.poster_path, "w92") || "/placeholder.svg"} // Use w92 for small poster
+                          src={getImageUrl(movie.poster_path, "w92") || "/placeholder.svg"} 
                           alt={movie.title || movie.name}
                           className="suggestion-image"
                           onError={(e) => {
-                            e.currentTarget.src = "/placeholder.png" // Fallback image
+                            e.currentTarget.src = "/placeholder.png" 
                           }}
                         />
                       )}
@@ -375,7 +372,7 @@ export function Header({ onNavigate }: HeaderProps) {
           <nav className="nav-bar">
             <button
               onClick={() => {
-                console.log("Movies button clicked!") // Debug log
+                console.log("Movies button clicked!") 
                 onNavigate("movies")
               }}
               className="nav-link"
@@ -384,7 +381,7 @@ export function Header({ onNavigate }: HeaderProps) {
             </button>
             <button
               onClick={() => {
-                console.log("Series button clicked!") // Debug log
+                console.log("Series button clicked!") 
                 onNavigate("series")
               }}
               className="nav-link"
@@ -393,7 +390,7 @@ export function Header({ onNavigate }: HeaderProps) {
             </button>
             <button
               onClick={() => {
-                console.log("Animation button clicked!") // Debug log
+                console.log("Animation button clicked!") 
                 onNavigate("animation")
               }}
               className="nav-link"

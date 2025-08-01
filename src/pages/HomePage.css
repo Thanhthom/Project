@@ -7,6 +7,7 @@
 
 .movie-section {
   padding: 32px 16px;
+  position: relative;
 }
 
 .section-header {
@@ -14,6 +15,22 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 24px;
+  position: relative;
+}
+
+.section-header::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  transition: width 0.3s ease;
+}
+
+.movie-section:hover .section-header::after {
+  width: 100px;
 }
 
 .section-title {
@@ -29,60 +46,102 @@
   }
 }
 
-.view-all-link {
+.carousel-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.carousel-btn {
+  background-color: rgba(31, 41, 55, 0.8);
+  border: 1px solid #374151;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  color: #ef4444;
-  text-decoration: none;
-  transition: color 0.2s ease-in-out;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
 }
 
-.view-all-link:hover {
-  color: #dc2626;
+.carousel-btn:hover {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  transform: scale(1.1);
 }
 
-.arrow-icon {
-  width: 16px;
-  height: 16px;
+.carousel-btn:active {
+  transform: scale(0.95);
 }
 
-.movies-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.carousel-icon {
+  width: 20px;
+  height: 20px;
+  color: white;
+}
+
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.movies-carousel {
+  display: flex;
   gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 8px;
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
 }
 
-@media (min-width: 640px) {
-  .movies-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.movies-carousel::-webkit-scrollbar {
+  display: none; 
+}
+
+.carousel-item {
+  flex: 0 0 280px;
+  transition: transform 0.2s ease;
+}
+
+.carousel-item:hover {
+  transform: scale(1.05);
 }
 
 @media (min-width: 768px) {
-  .movies-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+  .carousel-item {
+    flex: 0 0 300px;
   }
-}
 
-@media (min-width: 1024px) {
-  .movies-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-@media (min-width: 1280px) {
-  .movies-grid {
-    grid-template-columns: repeat(6, 1fr);
+  .movies-carousel {
+    gap: 20px;
   }
 }
 
 .loading-card {
+  flex: 0 0 280px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   background-color: #1f2937;
+}
+
+@media (min-width: 768px) {
+  .loading-card {
+    flex: 0 0 300px;
+  }
+}
+
+.loading-more-cards {
+  display: flex;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .loading-more-cards {
+    gap: 20px;
+  }
 }
 
 .loading-image {
@@ -183,12 +242,50 @@
   background-color: #dc2626;
 }
 
-.loading-more-indicator,
-.end-of-results {
-  text-align: center;
-  padding: 20px;
-  color: #9ca3af;
-  font-size: 1rem;
+@media (max-width: 768px) {
+  .movie-section {
+    padding: 24px 12px;
+  }
+
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .carousel-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .carousel-item {
+    flex: 0 0 250px;
+  }
+
+  .loading-card {
+    flex: 0 0 250px;
+  }
+}
+
+.carousel-container::before,
+.carousel-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-container::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.carousel-container::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent);
 }
 
 @keyframes pulse {
@@ -210,4 +307,29 @@
   }
 }
 
+@media (min-width: 1024px) {
+  .movies-carousel {
+    scrollbar-width: thin;
+    scrollbar-color: #374151 transparent;
+  }
+
+  .movies-carousel::-webkit-scrollbar {
+    display: block;
+    height: 6px;
+  }
+
+  .movies-carousel::-webkit-scrollbar-track {
+    background: rgba(55, 65, 81, 0.3);
+    border-radius: 3px;
+  }
+
+  .movies-carousel::-webkit-scrollbar-thumb {
+    background: #374151;
+    border-radius: 3px;
+  }
+
+  .movies-carousel::-webkit-scrollbar-thumb:hover {
+    background: #4b5563;
+  }
+}
 
