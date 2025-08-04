@@ -37,7 +37,6 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
 
   useEffect(() => {
     const loadSeries = async () => {
-      console.log("Loading series...")
       setLoading(true)
       setError(null)
       try {
@@ -97,7 +96,7 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
     return (
       <main className="series-page">
         <div className="series-header">
-          <h1 className="series-title">Loading Series...</h1>
+          
         </div>
         <div className="series-grid">
           {Array.from({ length: 20 }).map((_, index) => (
@@ -126,8 +125,6 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
     <main className="series-page">
       <div className="series-header">
         <h1 className="series-title"></h1>
-        {/* <h1 className="series-title">All TV Series ({series.length} results)</h1> */}
-
         <div className="sort-controls">
           <span className="sort-label">Sort by:</span>
           <button

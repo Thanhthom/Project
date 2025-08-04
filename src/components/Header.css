@@ -828,7 +828,7 @@
   }
 
   .mobile-nav-link {
-    color: #fff;
+    color: black;
     font-size: 1.5rem; /* Larger font size for mobile links */
     font-weight: 700;
     width: 100%;
@@ -877,9 +877,8 @@
     transition: transform 0.4s ease-out; /* Add transition for slide-in */
   }
 
-  /* Back button for mobile dropdowns */
   .mobile-dropdown-back-button {
-    display: flex; /* Show on mobile */
+    display: flex; 
     background: none;
     border: none;
     color: #fff;
@@ -895,7 +894,7 @@
   }
 
   .mobile-dropdown-back-button .chevron-icon {
-    transform: rotate(90deg); /* Point left */
+    transform: rotate(90deg); 
     width: 24px;
     height: 24px;
   }
@@ -936,10 +935,9 @@
     max-width: 400px;
   }
 
-  /* Specific adjustments for login dropdown on mobile */
   .dropdown-content.login-dropdown.mobile-dropdown-override {
     justify-content: center;
-    padding-top: 80px; /* More space from top for login modal */
+    padding-top: 80px;
   }
 
   .dropdown-content.login-dropdown.mobile-dropdown-override .dropdown-item {
@@ -950,10 +948,7 @@
   }
 
   .notification-icon.mobile-notification-icon {
-    display: block; /* Show on mobile */
-    width: 24px; /* Larger icon for mobile menu */
-    height: 24px;
-    margin-top: 20px; /* Add some spacing */
+    display: none;
   }
 }
 

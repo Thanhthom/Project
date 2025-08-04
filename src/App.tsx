@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Header } from "./components/Header"
 import { HomePage } from "./pages/HomePage"
@@ -25,11 +23,12 @@ function App() {
     param?: string | number[] | string[],
   ) => {
     setCurrentPage(page)
-    setCurrentDetailId(null)
-    setCurrentSearchQuery(null)
-    setCurrentGenreIds(null)
-    setCurrentCountryCodes(null)
+    if (page !== "detail") setCurrentDetailId(null)
+    if (page !== "search") setCurrentSearchQuery(null)
+    if (page !== "genre-results") setCurrentGenreIds(null)
+    if (page !== "country-results") setCurrentCountryCodes(null)
 
+    // Thiết lập param theo page
     if (page === "detail") {
       setCurrentDetailId(param as string)
     } else if (page === "search") {
@@ -44,26 +43,51 @@ function App() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Header onNavigate={handleNavigate} />
-      {currentPage === "home" ? (
+
+      {currentPage === "home" && (
         <HomePage onNavigateToDetail={(id) => handleNavigate("detail", id)} />
-      ) : currentPage === "detail" ? (
-        <DetailPage id={currentDetailId} onNavigateToDetail={(id) => handleNavigate("detail", id)} />
-      ) : currentPage === "search" ? (
-        <SearchPage searchQuery={currentSearchQuery} onNavigateToDetail={(id) => handleNavigate("detail", id)} />
-      ) : currentPage === "genre-results" ? (
-        <GenreResultsPage genreIds={currentGenreIds} onNavigateToDetail={(id) => handleNavigate("detail", id)} />
-      ) : currentPage === "country-results" ? (
+      )}
+
+      {currentPage === "detail" && currentDetailId && (
+        <DetailPage
+          key={currentDetailId}  // ép remount khi id đổi
+          id={currentDetailId}
+          onNavigateToDetail={(id) => handleNavigate("detail", id)}
+        />
+      )}
+
+      {currentPage === "search" && (
+        <SearchPage
+          searchQuery={currentSearchQuery}
+          onNavigateToDetail={(id) => handleNavigate("detail", id)}
+        />
+      )}
+
+      {currentPage === "genre-results" && (
+        <GenreResultsPage
+          genreIds={currentGenreIds}
+          onNavigateToDetail={(id) => handleNavigate("detail", id)}
+        />
+      )}
+
+      {currentPage === "country-results" && (
         <CountryResultsPage
           countryCodes={currentCountryCodes}
           onNavigateToDetail={(id) => handleNavigate("detail", id)}
         />
-      ) : currentPage === "movies" ? (
+      )}
+
+      {currentPage === "movies" && (
         <MoviesPage onNavigateToDetail={(id) => handleNavigate("detail", id)} />
-      ) : currentPage === "series" ? (
+      )}
+
+      {currentPage === "series" && (
         <SeriesPage onNavigateToDetail={(id) => handleNavigate("detail", id)} />
-      ) : currentPage === "animation" ? (
+      )}
+
+      {currentPage === "animation" && (
         <AnimationPage onNavigateToDetail={(id) => handleNavigate("detail", id)} />
-      ) : null}
+      )}
     </div>
   )
 }

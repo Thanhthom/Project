@@ -753,12 +753,11 @@ export function Header({ onNavigate }: HeaderProps) {
     setLoginModalMode(mode)
     setShowLoginModal(true)
     setShowLoginDropdown(false)
-    setIsMobileMenuOpen(false) // Close mobile menu when opening login modal
+    setIsMobileMenuOpen(false) 
   }
 
   const handleToggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
-    // Close all other dropdowns when mobile menu is toggled
     setShowGenreDropdown(false)
     setShowCountryDropdown(false)
     setShowSearchSuggestions(false)
@@ -774,7 +773,7 @@ export function Header({ onNavigate }: HeaderProps) {
     param?: string | number[] | string[],
   ) => {
     onNavigate(page, param)
-    setIsMobileMenuOpen(false) // Close mobile menu after navigation
+    setIsMobileMenuOpen(false)
   }
 
   return (
@@ -952,7 +951,6 @@ export function Header({ onNavigate }: HeaderProps) {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
       <div ref={mobileMenuRef} className={`mobile-menu ${isMobileMenuOpen ? "open" : ""}`}>
         <button className="mobile-menu-close" onClick={handleToggleMobileMenu}>
           <X className="close-icon" />
@@ -976,7 +974,6 @@ export function Header({ onNavigate }: HeaderProps) {
             >
               Genre <ChevronDown className={`chevron-icon ${showGenreDropdown ? "open" : ""}`} />
             </button>
-            {/* Reusing the same dropdown-content, but it will be styled differently by CSS for mobile */}
             {showGenreDropdown && (
               <div className="dropdown-content mobile-dropdown-override">
                 <button className="mobile-dropdown-back-button" onClick={() => setShowGenreDropdown(false)}>
@@ -1011,13 +1008,12 @@ export function Header({ onNavigate }: HeaderProps) {
             )}
           </div>
 
-          {/* Country Section for Mobile */}
           <div className="mobile-nav-dropdown">
             <button
               className="mobile-nav-link dropdown-trigger"
               onClick={() => {
                 setShowCountryDropdown(!showCountryDropdown)
-                setShowGenreDropdown(false) // Close other dropdowns
+                setShowGenreDropdown(false)
                 setShowLoginDropdown(false)
                 setShowSearchSuggestions(false)
               }}
@@ -1070,13 +1066,12 @@ export function Header({ onNavigate }: HeaderProps) {
             Animation
           </button>
 
-          {/* Login/Signup for Mobile */}
           <div className="mobile-nav-dropdown">
             <button
               className="mobile-nav-link dropdown-trigger"
               onClick={() => {
                 setShowLoginDropdown(!showLoginDropdown)
-                setShowGenreDropdown(false) // Close other dropdowns
+                setShowGenreDropdown(false) 
                 setShowCountryDropdown(false)
                 setShowSearchSuggestions(false)
               }}

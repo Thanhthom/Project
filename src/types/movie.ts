@@ -15,7 +15,7 @@ export interface MediaItem {
   vote_average?: number
   vote_count?: number
   popularity?: number
-  runtime?: number
+  runtime?: number // Đảm bảo trường này có sẵn
   genre_ids?: number[]
   genres?: Genre[]
   adult?: boolean
