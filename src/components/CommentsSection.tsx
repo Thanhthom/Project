@@ -21,7 +21,7 @@ export function CommentsSection({ comments }: CommentsSectionProps) {
 
       <div className="comment-input-section">
         <div className="user-avatar">
-          <img src="/placeholder-user.png" alt="User Avatar" className="avatar-image" />
+          {/* <img src="./mau.jpg" alt="User Avatar" className="avatar-image" /> */}
           <div className="avatar-fallback">YO</div>
         </div>
         <div className="input-container">
@@ -35,7 +35,7 @@ export function CommentsSection({ comments }: CommentsSectionProps) {
           <div key={comment.id} className="comment-item">
             <div className="comment-avatar">
               <img
-                src={comment.avatarUrl || "/placeholder.png"}
+                src={comment.avatarUrl || "./mau.jpg"}
                 alt={`${comment.author} Avatar`}
                 className="avatar-image"
                 onError={(e) => {

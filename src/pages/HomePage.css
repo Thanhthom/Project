@@ -1,4 +1,4 @@
-.home-page {
+/* .home-page {
   background-color: #000;
   color: white;
   min-height: 100vh;
@@ -332,4 +332,252 @@
     background: #4b5563;
   }
 }
+ */
 
+
+ .home-page {
+  background-color: #000;
+  color: white;
+  min-height: 100vh;
+  padding-top: 70px;
+}
+
+.movie-section {
+  padding: 32px 16px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .section-title {
+    font-size: 1.875rem;
+  }
+}
+
+.carousel-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.carousel-btn {
+  background-color: rgba(55, 65, 81, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.carousel-btn:hover {
+  background-color: rgba(239, 68, 68, 0.8);
+  transform: scale(1.1);
+}
+
+.carousel-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.movies-carousel {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(200px, 250px);
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 8px;
+  /* Ẩn scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.movies-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .movies-carousel {
+    grid-auto-columns: minmax(220px, 280px);
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .movies-carousel {
+    grid-auto-columns: minmax(240px, 300px);
+    gap: 24px;
+  }
+}
+
+.carousel-item {
+  height: 100%; /* Đảm bảo item chiếm toàn bộ chiều cao */
+  min-height: 400px; /* Chiều cao tối thiểu cố định */
+}
+
+@media (min-width: 768px) {
+  .carousel-item {
+    min-height: 420px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .carousel-item {
+    min-height: 450px;
+  }
+}
+
+.loading-card {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  background-color: #1f2937;
+  min-height: 400px; /* Cùng chiều cao với carousel-item */
+  display: flex;
+  flex-direction: column;
+}
+
+.loading-image {
+  aspect-ratio: 2 / 3;
+  background-color: #374151;
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+
+.loading-content {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.loading-title {
+  height: 16px;
+  width: 80%;
+  background-color: #374151;
+  border-radius: 4px;
+  animation: pulse 2s infinite;
+}
+
+.loading-info {
+  height: 12px;
+  width: 60%;
+  background-color: #374151;
+  border-radius: 4px;
+  animation: pulse 2s infinite;
+}
+
+.loading-more-cards {
+  display: contents; /* Để các loading cards nằm trong cùng grid */
+}
+
+.hero-loading {
+  height: 500px;
+  background-color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .hero-loading {
+    height: 600px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-loading {
+    height: 700px;
+  }
+}
+
+.loading-hero {
+  width: 100px;
+  height: 100px;
+  border: 4px solid #374151;
+  border-top: 4px solid #ef4444;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #000;
+}
+
+.error-content {
+  text-align: center;
+  color: white;
+}
+
+.error-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.error-message {
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+.retry-button {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.retry-button:hover {
+  background-color: #dc2626;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

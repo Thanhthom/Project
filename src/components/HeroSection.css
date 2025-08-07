@@ -61,7 +61,7 @@
 
 .hero-text {
   max-width: 700px;
-  margin-bottom: 2rem;
+  margin: 32px ;
 }
 
 .hero-title {
@@ -145,7 +145,8 @@
 
 .hero-buttons {
   display: flex;
-  gap: 1rem;
+  gap: 16px;
+  margin: 32px 0;
   flex-wrap: wrap;
 }
 

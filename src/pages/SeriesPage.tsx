@@ -21,16 +21,16 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
 
   const fetchSeries = async (page: number, sort: string, order: string) => {
     try {
-      console.log(`Fetching series: page=${page}, sort=${sort}, order=${order}`)
+      console.log(`🔍 SeriesPage: Fetching series: page=${page}, sort=${sort}, order=${order}`)
       const response = await fetch(
         `https://api.themoviedb.org/3/discover/tv?api_key=${import.meta.env.VITE_API_KEY}&page=${page}&sort_by=${sort}.${order}&include_adult=false`,
       )
       if (!response.ok) throw new Error(`Failed to fetch series: ${response.statusText}`)
       const data = await response.json()
-      console.log(`Series fetched successfully: ${data.results.length} series`)
+      console.log(`✅ SeriesPage: Series fetched successfully: ${data.results.length} series`)
       return { results: data.results, total_pages: data.total_pages }
     } catch (error) {
-      console.error("Error fetching series:", error)
+      console.error("❌ SeriesPage: Error fetching series:", error)
       throw error
     }
   }
@@ -47,9 +47,9 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
           setSeries((prevSeries) => [...prevSeries, ...results])
         }
         setTotalPages(total_pages)
-        console.log(`Series loaded: ${results.length} series, total pages: ${total_pages}`)
+        console.log(` SeriesPage: Series loaded: ${results.length} series, total pages: ${total_pages}`)
       } catch (err: any) {
-        console.error("Error loading series:", err)
+        console.error(" SeriesPage: Error loading series:", err)
         setError(err.message || "Failed to load series.")
       } finally {
         setLoading(false)
@@ -58,6 +58,7 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
 
     loadSeries()
   }, [currentPage, sortBy, sortOrder])
+
   useEffect(() => {
     if (currentPage !== 1) {
       setCurrentPage(1)
@@ -65,25 +66,31 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
     }
   }, [sortBy, sortOrder])
 
-  const convertToContentCard = (seriesItem: MediaItem) => ({
-    title: seriesItem.name || seriesItem.title || "Unknown Title",
-    imageUrl: getImageUrl(seriesItem.poster_path || "", "w300"),
-    releaseInfo: formatDate(seriesItem.first_air_date || seriesItem.release_date || ""),
-    type: "series" as const,
-    isNew: !!seriesItem.vote_average && seriesItem.vote_average > 8,
-    isHot: !!seriesItem.popularity && seriesItem.popularity > 1000,
-    id: seriesItem.id.toString(),
-  })
+  const convertToContentCard = (seriesItem: MediaItem) => {
+    const cardData = {
+      title: seriesItem.name || seriesItem.title || "Unknown Title",
+      imageUrl: getImageUrl(seriesItem.poster_path || "", "w300"),
+      releaseInfo: formatDate(seriesItem.first_air_date || seriesItem.release_date || ""),
+      type: "series" as const,
+      isNew: !!seriesItem.vote_average && seriesItem.vote_average > 8,
+      isHot: !!seriesItem.popularity && seriesItem.popularity > 1000,
+      id: seriesItem.id.toString(),
+      mediaType: "tv" as const,
+    }
+
+    console.log(`SeriesPage: Converting series - ID: ${seriesItem.id}, Name: ${seriesItem.name}`)
+    return cardData
+  }
 
   const handleLoadMore = () => {
     if (currentPage < totalPages && !loading) {
-      console.log(`Loading more series: page ${currentPage + 1}`)
+      console.log(` SeriesPage: Loading more series: page ${currentPage + 1}`)
       setCurrentPage((prevPage) => prevPage + 1)
     }
   }
 
   const handleSortChange = (newSortBy: "popularity" | "first_air_date" | "vote_average") => {
-    console.log(`Changing sort: ${newSortBy}`)
+    console.log(` SeriesPage: Changing sort: ${newSortBy}`)
     if (newSortBy === sortBy) {
       setSortOrder(sortOrder === "desc" ? "asc" : "desc")
     } else {
@@ -95,9 +102,7 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
   if (loading && series.length === 0) {
     return (
       <main className="series-page">
-        <div className="series-header">
-          
-        </div>
+        <div className="series-header"></div>
         <div className="series-grid">
           {Array.from({ length: 20 }).map((_, index) => (
             <ContentCardSkeleton key={index} />
@@ -124,7 +129,7 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
   return (
     <main className="series-page">
       <div className="series-header">
-        <h1 className="series-title"></h1>
+        <h1 className="series-title">TV Series</h1>
         <div className="sort-controls">
           <span className="sort-label">Sort by:</span>
           <button
@@ -153,7 +158,20 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
           <div className="series-grid">
             {series.map((seriesItem) => {
               const cardData = convertToContentCard(seriesItem)
-              return <ContentCard key={cardData.id} {...cardData} onClick={() => onNavigateToDetail(cardData.id)} />
+              const finalId = `tv-${cardData.id}` // Đảm bảo prefix tv-
+
+              console.log(` SeriesPage: Rendering card - Original ID: ${seriesItem.id}, Final ID: ${finalId}`)
+
+              return (
+                <ContentCard
+                  key={`series-${cardData.id}`} 
+                  {...cardData}
+                  onClick={() => {
+                    console.log(` SeriesPage: Clicked series - Navigating to: ${finalId}`)
+                    onNavigateToDetail(finalId)
+                  }}
+                />
+              )
             })}
           </div>
 

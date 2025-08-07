@@ -83,6 +83,13 @@
   font-size: 0.875rem;
   font-weight: 500;
 }
+.media-type-controls{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
 .type-button {
   background-color: #374151;
