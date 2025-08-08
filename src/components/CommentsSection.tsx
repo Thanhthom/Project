@@ -21,7 +21,6 @@ export function CommentsSection({ comments }: CommentsSectionProps) {
 
       <div className="comment-input-section">
         <div className="user-avatar">
-          {/* <img src="./mau.jpg" alt="User Avatar" className="avatar-image" /> */}
           <div className="avatar-fallback">YO</div>
         </div>
         <div className="input-container">

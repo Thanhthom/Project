@@ -434,7 +434,6 @@
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 640px) {
   .actors-header {
     gap: 16px;

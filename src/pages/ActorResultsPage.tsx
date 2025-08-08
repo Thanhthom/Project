@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { ContentCard } from "../components/ContentCard"
 import { getImageUrl, formatDate } from "../config/api"
@@ -69,8 +67,6 @@ export function ActorResultsPage({ actorIds, onNavigateToDetail, initialPage = 1
 
       try {
         console.log("Loading movies for actors:", actorIds)
-
-        // For multiple actors, we'll fetch movies for each actor and combine them
         const allMovies: MediaItem[] = []
         const movieIds = new Set<number>()
 
@@ -93,7 +89,6 @@ export function ActorResultsPage({ actorIds, onNavigateToDetail, initialPage = 1
           const data = await response.json()
           console.log(`API response for actor ${actorId}:`, data)
 
-          // Add movies to the collection, avoiding duplicates
           if (data.cast) {
             data.cast.forEach((movie: MediaItem) => {
               if (!movieIds.has(movie.id)) {
@@ -104,10 +99,8 @@ export function ActorResultsPage({ actorIds, onNavigateToDetail, initialPage = 1
           }
         }
 
-        // Sort by popularity descending
         const sortedMovies = allMovies.sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
 
-        // Paginate results
         const itemsPerPage = 20
         const startIndex = (currentPage - 1) * itemsPerPage
         const endIndex = startIndex + itemsPerPage

@@ -53,7 +53,7 @@ function App() {
     if (page !== "country-results") setCurrentCountryCodes(null)
     if (page !== "actor-results") setCurrentActorIds(null)
 
-    // Thiết lập param theo page
+
     if (page === "detail") {
       console.log("App: Setting detail ID to:", param as string)
       setCurrentDetailId(param as string)

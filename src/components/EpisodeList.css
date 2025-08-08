@@ -149,7 +149,6 @@
   fill: currentColor;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .episodes-title {
     font-size: 1.25rem;

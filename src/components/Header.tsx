@@ -239,7 +239,7 @@ export function Header({ onNavigate }: HeaderProps) {
         setSelectedGenres([])
         setShowGenreDropdown(false)
         setGenreSearchQuery("")
-        setIsMobileMenuOpen(false) // Close mobile menu after navigation
+        setIsMobileMenuOpen(false)
       }
     }
   }
@@ -264,7 +264,7 @@ export function Header({ onNavigate }: HeaderProps) {
         setSelectedCountries([])
         setShowCountryDropdown(false)
         setCountrySearchQuery("")
-        setIsMobileMenuOpen(false) // Close mobile menu after navigation
+        setIsMobileMenuOpen(false) 
       }
     }
   }
@@ -287,7 +287,7 @@ export function Header({ onNavigate }: HeaderProps) {
       setSearchQuery("")
       setSearchSuggestions([])
       setShowSearchSuggestions(false)
-      setIsMobileMenuOpen(false) // Close mobile menu after navigation
+      setIsMobileMenuOpen(false) 
     }
   }
 
@@ -296,8 +296,7 @@ export function Header({ onNavigate }: HeaderProps) {
     setSearchQuery("")
     setSearchSuggestions([])
     setShowSearchSuggestions(false)
-    setIsMobileMenuOpen(false) // Close mobile menu after navigation
-  }
+    setIsMobileMenuOpen(false) }
 
   const filteredGenres = genres.filter((genre) => genre.name.toLowerCase().includes(genreSearchQuery.toLowerCase()))
 
@@ -521,13 +520,10 @@ export function Header({ onNavigate }: HeaderProps) {
         <nav className="mobile-nav-bar">
           <button onClick={() => {
             handleNavigateAndClose("home")
-            // Scroll to top smoothly
             window.scrollTo({ top: 0, behavior: 'smooth' })
           }} className="mobile-nav-link">
             Home
           </button>
-
-          {/* Genre Section for Mobile */}
           <div className="mobile-nav-dropdown">
             <button
               className="mobile-nav-link dropdown-trigger"

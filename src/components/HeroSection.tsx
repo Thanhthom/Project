@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Play, Clock, ChevronLeft, ChevronRight } from "lucide-react" // Import ChevronLeft, ChevronRight
+import { Play, Clock, ChevronLeft, ChevronRight } from "lucide-react" 
 import { getImageUrl, formatDate, formatRuntime } from "../config/api"
 import type { MediaItem } from "../types/movie"
 import "./HeroSection.css"
@@ -7,9 +7,9 @@ import "./HeroSection.css"
 interface HeroSectionProps {
   movie: MediaItem
   movieGenres: { [key: number]: string }
-  totalMovies: number // Thêm prop totalMovies
-  currentMovieIndex: number // Thêm prop currentMovieIndex
-  onNavigateHero: (direction: "prev" | "next") => void // Thêm prop onNavigateHero
+  totalMovies: number
+  currentMovieIndex: number
+  onNavigateHero: (direction: "prev" | "next") => void
 }
 
 export function HeroSection({ movie, movieGenres, totalMovies, currentMovieIndex, onNavigateHero }: HeroSectionProps) {
@@ -51,7 +51,6 @@ export function HeroSection({ movie, movieGenres, totalMovies, currentMovieIndex
         <div className="hero-text">
           <h1 className="hero-title">{title}</h1>
 
-          {/* Genre Tags */}
           {genres.length > 0 && (
             <div className="hero-genres">
               {genres.slice(0, 3).map((genre, index) => (
@@ -65,7 +64,6 @@ export function HeroSection({ movie, movieGenres, totalMovies, currentMovieIndex
             </div>
           )}
 
-          {/* Metadata */}
           <div className="hero-metadata">
             {releaseYear && <span className="metadata-item">📅 {releaseYear}</span>}
             {runtime && (
@@ -92,7 +90,6 @@ export function HeroSection({ movie, movieGenres, totalMovies, currentMovieIndex
           </div>
         </div>
 
-        {/* Navigation Buttons */}
         <button className="hero-nav-button prev" onClick={() => onNavigateHero("prev")}>
           <ChevronLeft className="nav-icon" />
         </button>
@@ -100,7 +97,6 @@ export function HeroSection({ movie, movieGenres, totalMovies, currentMovieIndex
           <ChevronRight className="nav-icon" />
         </button>
 
-        {/* Pagination Dots */}
         <div className="hero-dots">
           {Array.from({ length: totalMovies }).map((_, index) => (
             <span key={index} className={`dot ${currentMovieIndex === index ? "active" : ""}`}></span>

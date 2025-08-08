@@ -15,7 +15,6 @@ export function LoginModal({ isOpen, onClose, initialMode = "login" }: LoginModa
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  // Form states
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -44,7 +43,6 @@ export function LoginModal({ isOpen, onClose, initialMode = "login" }: LoginModa
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
 
-    // Clear error when user starts typing
     if (errors[field as keyof typeof errors]) {
       setErrors((prev) => ({ ...prev, [field]: "" }))
     }
@@ -58,21 +56,19 @@ export function LoginModal({ isOpen, onClose, initialMode = "login" }: LoginModa
       fullName: "",
     }
 
-    // Email validation
     if (!formData.email) {
       newErrors.email = "Email is required"
     } else if (!validateEmail(formData.email)) {
       newErrors.email = "Please enter a valid email"
     }
 
-    // Password validation
+
     if (!formData.password) {
       newErrors.password = "Password is required"
     } else if (!validatePassword(formData.password)) {
       newErrors.password = "Password must be at least 6 characters"
     }
 
-    // Signup specific validations
     if (mode === "signup") {
       if (!formData.fullName) {
         newErrors.fullName = "Full name is required"

@@ -253,7 +253,6 @@ export function DetailPage({ id, onNavigateToDetail }: DetailPageProps) {
 
   return (
     <main className="detail-page">
-      {/* Hero Section with Backdrop */}
       {media.backdrop_path && (
         <section className="detail-hero">
           <img
@@ -264,7 +263,7 @@ export function DetailPage({ id, onNavigateToDetail }: DetailPageProps) {
               e.currentTarget.src = "./mau.jpg"
             }}
           />
-          <div className="hero-overlay"></div>
+          {/* <div className="hero-overlay"></div>
           <div className="hero-content">
             <div className="hero-info">
               <h1 className="hero-title">{title}</h1>
@@ -304,7 +303,7 @@ export function DetailPage({ id, onNavigateToDetail }: DetailPageProps) {
                 Watch Trailer
               </button>
             </div>
-          </div>
+          </div> */}
         </section>
       )}
 
@@ -456,7 +455,7 @@ export function DetailPage({ id, onNavigateToDetail }: DetailPageProps) {
                     key={cardData.id}
                     {...cardData}
                     onClick={() => {
-                      console.log("🔗 Navigating to similar content:", `${mediaPrefix}-${cardData.id}`)
+                      console.log(" Navigating to similar content:", `${mediaPrefix}-${cardData.id}`)
                       onNavigateToDetail(`${mediaPrefix}-${cardData.id}`)
                     }}
                   />

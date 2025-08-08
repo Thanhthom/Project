@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Play, ChevronDown } from "lucide-react"
 import "./EpisodeList.css"

@@ -285,17 +285,15 @@
   font-size: 1rem;
 }
 
-/* Loading state improvements */
+
 .animation-grid.loading {
   opacity: 0.7;
 }
 
-/* Smooth transitions */
 .animation-grid {
   transition: opacity 0.3s ease;
 }
 
-/* Responsive controls */
 @media (max-width: 640px) {
   .controls-container {
     gap: 12px;
@@ -314,7 +312,6 @@
   }
 }
 
-/* Animation-specific styling */
 .animation-page .content-card {
   position: relative;
   overflow: hidden;

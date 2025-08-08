@@ -170,22 +170,6 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
     console.log(`🔄 AnimationPage: Changing media type: ${newMediaType}`)
     setMediaType(newMediaType)
   }
-
-  if (loading && animations.length === 0) {
-    // return (
-    //   <main className="animation-page">
-    //     <div className="animation-header">
-    //       <h1 className="animation-title">Animation Movies & Series</h1>
-    //     </div>
-    //     <div className="animation-grid">
-    //       {Array.from({ length: 20 }).map((_, index) => (
-    //         <ContentCardSkeleton key={index} />
-    //       ))}
-    //     </div>
-    //   </main>
-    // )
-  }
-
   if (error) {
     return (
       <main className="animation-page">

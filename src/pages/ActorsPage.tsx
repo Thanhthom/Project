@@ -83,7 +83,6 @@ export function ActorsPage({ onNavigateToActorResults, onNavigateToDetail }: Act
     loadActors()
   }, [currentPage, searchQuery])
 
-  // Reset to page 1 when search changes
   useEffect(() => {
     if (currentPage !== 1) {
       setCurrentPage(1)
@@ -100,11 +99,9 @@ export function ActorsPage({ onNavigateToActorResults, onNavigateToDetail }: Act
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    // Search will be triggered by useEffect when searchQuery changes
   }
 
   const handleActorClick = (actor: Actor) => {
-    // Navigate to actor results with single actor
     onNavigateToActorResults([actor.id])
   }
 
