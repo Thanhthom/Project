@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Play, Clock, ChevronLeft, ChevronRight } from "lucide-react" 
+import { Play, Clock, ChevronLeft, ChevronRight } from 'lucide-react'
 import { getImageUrl, formatDate, formatRuntime } from "../config/api"
 import type { MediaItem } from "../types/movie"
 import "./HeroSection.css"
@@ -10,9 +10,17 @@ interface HeroSectionProps {
   totalMovies: number
   currentMovieIndex: number
   onNavigateHero: (direction: "prev" | "next") => void
+  onNavigateToDetail: (id: string) => void
 }
 
-export function HeroSection({ movie, movieGenres, totalMovies, currentMovieIndex, onNavigateHero }: HeroSectionProps) {
+export function HeroSection({ 
+  movie, 
+  movieGenres, 
+  totalMovies, 
+  currentMovieIndex, 
+  onNavigateHero,
+  onNavigateToDetail 
+}: HeroSectionProps) {
   const [imageError, setImageError] = useState(false)
 
   const genres = movie.genre_ids
@@ -32,16 +40,30 @@ export function HeroSection({ movie, movieGenres, totalMovies, currentMovieIndex
   const backgroundImage =
     movie.backdrop_path && !imageError
       ? getImageUrl(movie.backdrop_path, "w1280")
-      : "/placeholder.png?height=700&width=1920"
+      : "./mau.jpg?height=700&width=1920"
 
   const handleImageError = () => {
     setImageError(true)
   }
 
+  const handleWatchNow = () => {
+    const isMovie = movie.title || !movie.name
+    const mediaPrefix = isMovie ? "movie" : "tv"
+    const detailId = `${mediaPrefix}-${movie.id}`
+    
+    console.log(" HeroSection: Watch Now clicked - Navigating to:", detailId)
+    console.log(" Movie data:", { title: movie.title, name: movie.name, id: movie.id })
+    onNavigateToDetail(detailId)
+  }
+
+  const handleWatchLater = () => {
+    handleWatchNow()
+  }
+
   return (
     <section className="hero-section">
       <img
-        src={backgroundImage || "/placeholder.svg"}
+        src={backgroundImage || "./mau.jpg"}
         alt={title}
         className="hero-background"
         onError={handleImageError}
@@ -79,11 +101,11 @@ export function HeroSection({ movie, movieGenres, totalMovies, currentMovieIndex
           <p className="hero-description">{movie.overview || "No description available for this movie."}</p>
 
           <div className="hero-buttons">
-            <button className="hero-btn primary">
+            <button className="hero-btn primary" onClick={handleWatchNow}>
               <Play className="btn-icon" />
               Watch Now
             </button>
-            <button className="hero-btn secondary">
+            <button className="hero-btn secondary" onClick={handleWatchLater}>
               <Clock className="btn-icon" />
               Watch Later
             </button>

@@ -1,12 +1,10 @@
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
-import { Search, Menu, Bell, ChevronDown, Check, X } from 'lucide-react' // Import X icon for close button
+import { Search, Menu, Bell, ChevronDown, Check, X } from 'lucide-react' 
 import { fetchMovieGenres, fetchSearchMovies, getImageUrl } from "../config/api"
 import type { MediaItem } from "../types/movie"
 import { LoginModal } from "./LoginModal"
 import "./Header.css"
-
-// Add debounce utility function
 const debounce = (func: (...args: any[]) => void, delay: number) => {
   let timeout: NodeJS.Timeout
   return (...args: any[]) => {
@@ -48,14 +46,14 @@ export function Header({ onNavigate }: HeaderProps) {
   const [showLoginDropdown, setShowLoginDropdown] = useState(false)
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [loginModalMode, setLoginModalMode] = useState<"login" | "signup">("login")
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false) // New state for mobile menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false) 
 
-  const headerRef = useRef<HTMLElement>(null) // Ref for the header itself
+  const headerRef = useRef<HTMLElement>(null) 
   const genreDropdownRef = useRef<HTMLDivElement>(null)
   const countryDropdownRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLDivElement>(null)
   const loginDropdownRef = useRef<HTMLDivElement>(null)
-  const mobileMenuRef = useRef<HTMLDivElement>(null) // Ref for the mobile menu
+  const mobileMenuRef = useRef<HTMLDivElement>(null) 
 
   const fetchCountries = async () => {
     try {
@@ -64,10 +62,8 @@ export function Header({ onNavigate }: HeaderProps) {
       )
       if (!response.ok) throw new Error("Failed to fetch countries")
       const data = await response.json()
-      console.log("Countries fetched from API:", data)
       return data
     } catch (error) {
-      console.error("Error fetching countries:", error)
       return []
     }
   }
@@ -82,7 +78,6 @@ export function Header({ onNavigate }: HeaderProps) {
         const results = await fetchSearchMovies(query)
         setSearchSuggestions(results.slice(0, 5))
       } catch (error) {
-        console.error("Error fetching search suggestions:", error)
         setSearchSuggestions([])
       }
     }, 300),
@@ -115,7 +110,6 @@ export function Header({ onNavigate }: HeaderProps) {
     loadCountries()
 
     const handleClickOutside = (event: MouseEvent) => {
-      // Close desktop dropdowns
       if (genreDropdownRef.current && !genreDropdownRef.current.contains(event.target as Node)) {
         setShowGenreDropdown(false)
         setGenreSearchQuery("")
@@ -132,7 +126,6 @@ export function Header({ onNavigate }: HeaderProps) {
         setShowLoginDropdown(false)
       }
 
-      // Close mobile menu if click outside and not on the menu button
       if (
         mobileMenuRef.current &&
         !mobileMenuRef.current.contains(event.target as Node) &&
@@ -182,17 +175,12 @@ export function Header({ onNavigate }: HeaderProps) {
 
         if (showGenreDropdown && selectedGenres.length > 0) {
           event.preventDefault()
-          console.log("Header: Global Enter pressed for genres, navigating to genre results with:", selectedGenres)
           onNavigate("genre-results", selectedGenres)
           setSelectedGenres([])
           setShowGenreDropdown(false)
           setGenreSearchQuery("")
         } else if (showCountryDropdown && selectedCountries.length > 0) {
           event.preventDefault()
-          console.log(
-            "Header: Global Enter pressed for countries, navigating to country results with:",
-            selectedCountries,
-          )
           onNavigate("country-results", selectedCountries)
           setSelectedCountries([])
           setShowCountryDropdown(false)
@@ -224,8 +212,6 @@ export function Header({ onNavigate }: HeaderProps) {
       const newSelected = prevSelected.includes(genreId)
         ? prevSelected.filter((id) => id !== genreId)
         : [...prevSelected, genreId]
-
-      console.log("Genre selection updated:", newSelected)
       return newSelected
     })
   }
@@ -234,7 +220,6 @@ export function Header({ onNavigate }: HeaderProps) {
     if (event.key === "Enter") {
       event.preventDefault()
       if (selectedGenres.length > 0) {
-        console.log("Header: Enter pressed in genre search, navigating with:", selectedGenres)
         onNavigate("genre-results", selectedGenres)
         setSelectedGenres([])
         setShowGenreDropdown(false)
@@ -249,8 +234,6 @@ export function Header({ onNavigate }: HeaderProps) {
       const newSelected = prevSelected.includes(countryCode)
         ? prevSelected.filter((code) => code !== countryCode)
         : [...prevSelected, countryCode]
-
-      console.log(`Header: Country selection updated: ${countryName} (${countryCode})`, newSelected)
       return newSelected
     })
   }
@@ -259,7 +242,6 @@ export function Header({ onNavigate }: HeaderProps) {
     if (event.key === "Enter") {
       event.preventDefault()
       if (selectedCountries.length > 0) {
-        console.log("Header: Enter pressed in country search, navigating with:", selectedCountries)
         onNavigate("country-results", selectedCountries)
         setSelectedCountries([])
         setShowCountryDropdown(false)

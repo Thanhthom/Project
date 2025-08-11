@@ -21,16 +21,16 @@ export function MoviesPage({ onNavigateToDetail, initialPage = 1 }: MoviesPagePr
 
   const fetchMovies = async (page: number, sort: string, order: string) => {
     try {
-      console.log(`🔍 MoviesPage: Fetching movies: page=${page}, sort=${sort}, order=${order}`)
+      console.log(`MoviesPage: Fetching movies: page=${page}, sort=${sort}, order=${order}`)
       const response = await fetch(
         `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_API_KEY}&page=${page}&sort_by=${sort}.${order}&include_adult=false&include_video=false`,
       )
       if (!response.ok) throw new Error(`Failed to fetch movies: ${response.statusText}`)
       const data = await response.json()
-      console.log(`✅ MoviesPage: Movies fetched successfully: ${data.results.length} movies`)
+      console.log(`MoviesPage: Movies fetched successfully: ${data.results.length} movies`)
       return { results: data.results, total_pages: data.total_pages }
     } catch (error) {
-      console.error("❌ MoviesPage: Error fetching movies:", error)
+      // console.error("MoviesPage: Error fetching movies:", error)
       throw error
     }
   }
@@ -47,9 +47,9 @@ export function MoviesPage({ onNavigateToDetail, initialPage = 1 }: MoviesPagePr
           setMovies((prevMovies) => [...prevMovies, ...results])
         }
         setTotalPages(total_pages)
-        console.log(`✅ MoviesPage: Movies loaded: ${results.length} movies, total pages: ${total_pages}`)
+        console.log(` MoviesPage: Movies loaded: ${results.length} movies, total pages: ${total_pages}`)
       } catch (err: any) {
-        console.error("❌ MoviesPage: Error loading movies:", err)
+        console.error("MoviesPage: Error loading movies:", err)
         setError(err.message || "Failed to load movies.")
       } finally {
         setLoading(false)
@@ -59,7 +59,6 @@ export function MoviesPage({ onNavigateToDetail, initialPage = 1 }: MoviesPagePr
     loadMovies()
   }, [currentPage, sortBy, sortOrder])
 
-  // Reset to page 1 when sort changes
   useEffect(() => {
     setCurrentPage(1)
     setMovies([])
@@ -77,19 +76,19 @@ export function MoviesPage({ onNavigateToDetail, initialPage = 1 }: MoviesPagePr
       mediaType: "movie" as const,
     }
 
-    console.log(`🎬 MoviesPage: Converting movie - ID: ${movie.id}, Title: ${movie.title}`)
+    console.log(` MoviesPage: Converting movie - ID: ${movie.id}, Title: ${movie.title}`)
     return cardData
   }
 
   const handleLoadMore = () => {
     if (currentPage < totalPages && !loading) {
-      console.log(`📄 MoviesPage: Loading more movies: page ${currentPage + 1}`)
+      console.log(` MoviesPage: Loading more movies: page ${currentPage + 1}`)
       setCurrentPage((prevPage) => prevPage + 1)
     }
   }
 
   const handleSortChange = (newSortBy: "popularity" | "release_date" | "vote_average") => {
-    console.log(`🔄 MoviesPage: Changing sort: ${newSortBy}`)
+    console.log(`MoviesPage: Changing sort: ${newSortBy}`)
     if (newSortBy === sortBy) {
       setSortOrder(sortOrder === "desc" ? "asc" : "desc")
     } else {
@@ -157,16 +156,16 @@ export function MoviesPage({ onNavigateToDetail, initialPage = 1 }: MoviesPagePr
           <div className="movies-grid">
             {movies.map((movie) => {
               const cardData = convertToContentCard(movie)
-              const finalId = `movie-${cardData.id}` // Đảm bảo prefix movie-
+              const finalId = `movie-${cardData.id}` 
 
-              console.log(`🔗 MoviesPage: Rendering card - Original ID: ${movie.id}, Final ID: ${finalId}`)
+              console.log(` MoviesPage: Rendering card - Original ID: ${movie.id}, Final ID: ${finalId}`)
 
               return (
                 <ContentCard
-                  key={`movie-${cardData.id}`} // Unique key
+                  key={`movie-${cardData.id}`} 
                   {...cardData}
                   onClick={() => {
-                    console.log(`🎯 MoviesPage: Clicked movie - Navigating to: ${finalId}`)
+                    console.log(`MoviesPage: Clicked movie - Navigating to: ${finalId}`)
                     onNavigateToDetail(finalId)
                   }}
                 />

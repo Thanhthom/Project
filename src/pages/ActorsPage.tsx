@@ -99,6 +99,7 @@ export function ActorsPage({ onNavigateToActorResults, onNavigateToDetail }: Act
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
+
   }
 
   const handleActorClick = (actor: Actor) => {
@@ -200,12 +201,12 @@ export function ActorsPage({ onNavigateToActorResults, onNavigateToDetail }: Act
                     src={
                       actor.profile_path
                         ? getImageUrl(actor.profile_path, "w300")
-                        : "/placeholder.svg?height=450&width=300"
+                        : "./mau.jpg?height=450&width=300"
                     }
                     alt={actor.name}
                     className="actor-image"
                     onError={(e) => {
-                      e.currentTarget.src = "/placeholder.svg?height=450&width=300"
+                      e.currentTarget.src = "./mau.jpg?height=450&width=300"
                     }}
                   />
                   <div className="actor-overlay">

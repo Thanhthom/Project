@@ -200,17 +200,14 @@
   cursor: not-allowed;
 }
 
-/* Loading state improvements */
 .movies-grid.loading {
   opacity: 0.7;
 }
 
-/* Smooth transitions */
 .movies-grid {
   transition: opacity 0.3s ease;
 }
 
-/* Responsive sort controls */
 @media (max-width: 640px) {
   .sort-controls {
     flex-direction: column;

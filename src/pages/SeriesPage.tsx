@@ -27,10 +27,10 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
       )
       if (!response.ok) throw new Error(`Failed to fetch series: ${response.statusText}`)
       const data = await response.json()
-      console.log(`✅ SeriesPage: Series fetched successfully: ${data.results.length} series`)
+      console.log(`SeriesPage: Series fetched successfully: ${data.results.length} series`)
       return { results: data.results, total_pages: data.total_pages }
     } catch (error) {
-      console.error("❌ SeriesPage: Error fetching series:", error)
+      console.error(" SeriesPage: Error fetching series:", error)
       throw error
     }
   }
@@ -158,7 +158,7 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
           <div className="series-grid">
             {series.map((seriesItem) => {
               const cardData = convertToContentCard(seriesItem)
-              const finalId = `tv-${cardData.id}` // Đảm bảo prefix tv-
+              const finalId = `tv-${cardData.id}` 
 
               console.log(` SeriesPage: Rendering card - Original ID: ${seriesItem.id}, Final ID: ${finalId}`)
 

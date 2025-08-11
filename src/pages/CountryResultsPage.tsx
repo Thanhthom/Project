@@ -36,9 +36,6 @@ export function CountryResultsPage({ countryCodes, onNavigateToDetail, initialPa
       setError(null)
 
       try {
-        console.log("Loading movies for countries:", countryCodes)
-
-        // Fetch movies by country using TMDB API
         const countryString = countryCodes.join("|")
         const apiKey = import.meta.env.VITE_API_KEY
 
