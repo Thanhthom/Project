@@ -83,6 +83,12 @@
   }
 }
 
+@media(max-width: 768px) {
+  .hero-description {
+    display: none !important
+  }
+}
+
 .hero-genres {
   display: flex;
   flex-wrap: wrap;
@@ -104,9 +110,9 @@
 
 .hero-genre:hover,
 .hero-genre.active {
-  background-color: #ef4444;
-  color: white;
-  border-color: #ef4444;
+  background: rgba(55, 65, 81, 0.5);
+  border: 1px solid rgba(55, 65, 81, 0.7);
+  color: #d1d5db;
 }
 
 .hero-metadata {
@@ -226,7 +232,7 @@
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 2rem;
+  margin-top: 20px;
 }
 
 .dot {

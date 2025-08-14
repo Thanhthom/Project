@@ -71,14 +71,15 @@
 }
 
 .season-content.open {
-  max-height: 1000px; 
+  max-height: 1000px;
 }
 
 .episodes-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
   gap: 12px;
   padding-bottom: 16px;
+  padding-right: 16px;
 }
 
 .episode-item {
@@ -89,10 +90,8 @@
   background-color: #1f2937;
   border-radius: 6px;
   transition: background-color 0.2s ease;
-}
-
-.episode-item:hover {
-  background-color: #374151;
+  min-width: 280px;
+  flex-shrink: 0;
 }
 
 .episode-info {
@@ -163,6 +162,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    min-width: 240px; 
   }
 
   .episode-info {

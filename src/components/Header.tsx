@@ -1,10 +1,11 @@
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
-import { Search, Menu, Bell, ChevronDown, Check, X } from 'lucide-react' 
+import { Search, Menu, Bell, ChevronDown, Check, X, LogIn, UserPlus } from "lucide-react" 
 import { fetchMovieGenres, fetchSearchMovies, getImageUrl } from "../config/api"
 import type { MediaItem } from "../types/movie"
 import { LoginModal } from "./LoginModal"
 import "./Header.css"
+
 const debounce = (func: (...args: any[]) => void, delay: number) => {
   let timeout: NodeJS.Timeout
   return (...args: any[]) => {
@@ -62,8 +63,10 @@ export function Header({ onNavigate }: HeaderProps) {
       )
       if (!response.ok) throw new Error("Failed to fetch countries")
       const data = await response.json()
+      console.log("Countries fetched from API:", data)
       return data
     } catch (error) {
+      console.error("Error fetching countries:", error)
       return []
     }
   }
@@ -78,6 +81,7 @@ export function Header({ onNavigate }: HeaderProps) {
         const results = await fetchSearchMovies(query)
         setSearchSuggestions(results.slice(0, 5))
       } catch (error) {
+        console.error("Error fetching search suggestions:", error)
         setSearchSuggestions([])
       }
     }, 300),
@@ -88,7 +92,7 @@ export function Header({ onNavigate }: HeaderProps) {
       setScrolled(window.scrollY > 20)
     }
 
-    handleScroll()
+    // handleScroll()
     window.addEventListener("scroll", handleScroll, { passive: true })
 
     const loadGenres = async () => {
@@ -99,7 +103,6 @@ export function Header({ onNavigate }: HeaderProps) {
       }))
       setGenres(genresArray)
     }
-
     const loadCountries = async () => {
       const fetchedCountries = await fetchCountries()
       setCountries(fetchedCountries)
@@ -175,12 +178,17 @@ export function Header({ onNavigate }: HeaderProps) {
 
         if (showGenreDropdown && selectedGenres.length > 0) {
           event.preventDefault()
+          console.log("Header: Global Enter pressed for genres, navigating to genre results with:", selectedGenres)
           onNavigate("genre-results", selectedGenres)
           setSelectedGenres([])
           setShowGenreDropdown(false)
           setGenreSearchQuery("")
         } else if (showCountryDropdown && selectedCountries.length > 0) {
           event.preventDefault()
+          console.log(
+            "Header: Global Enter pressed for countries, navigating to country results with:",
+            selectedCountries,
+          )
           onNavigate("country-results", selectedCountries)
           setSelectedCountries([])
           setShowCountryDropdown(false)
@@ -212,6 +220,8 @@ export function Header({ onNavigate }: HeaderProps) {
       const newSelected = prevSelected.includes(genreId)
         ? prevSelected.filter((id) => id !== genreId)
         : [...prevSelected, genreId]
+
+      console.log("Genre selection updated:", newSelected)
       return newSelected
     })
   }
@@ -220,11 +230,12 @@ export function Header({ onNavigate }: HeaderProps) {
     if (event.key === "Enter") {
       event.preventDefault()
       if (selectedGenres.length > 0) {
+        console.log("Header: Enter pressed in genre search, navigating with:", selectedGenres)
         onNavigate("genre-results", selectedGenres)
         setSelectedGenres([])
         setShowGenreDropdown(false)
         setGenreSearchQuery("")
-        setIsMobileMenuOpen(false)
+        setIsMobileMenuOpen(false) // Close mobile menu after navigation
       }
     }
   }
@@ -234,6 +245,8 @@ export function Header({ onNavigate }: HeaderProps) {
       const newSelected = prevSelected.includes(countryCode)
         ? prevSelected.filter((code) => code !== countryCode)
         : [...prevSelected, countryCode]
+
+      console.log(`Header: Country selection updated: ${countryName} (${countryCode})`, newSelected)
       return newSelected
     })
   }
@@ -242,11 +255,12 @@ export function Header({ onNavigate }: HeaderProps) {
     if (event.key === "Enter") {
       event.preventDefault()
       if (selectedCountries.length > 0) {
+        console.log("Header: Enter pressed in country search, navigating with:", selectedCountries)
         onNavigate("country-results", selectedCountries)
         setSelectedCountries([])
         setShowCountryDropdown(false)
         setCountrySearchQuery("")
-        setIsMobileMenuOpen(false) 
+        setIsMobileMenuOpen(false) // Close mobile menu after navigation
       }
     }
   }
@@ -269,7 +283,7 @@ export function Header({ onNavigate }: HeaderProps) {
       setSearchQuery("")
       setSearchSuggestions([])
       setShowSearchSuggestions(false)
-      setIsMobileMenuOpen(false) 
+      setIsMobileMenuOpen(false) // Close mobile menu after navigation
     }
   }
 
@@ -278,7 +292,8 @@ export function Header({ onNavigate }: HeaderProps) {
     setSearchQuery("")
     setSearchSuggestions([])
     setShowSearchSuggestions(false)
-    setIsMobileMenuOpen(false) }
+    setIsMobileMenuOpen(false) // Close mobile menu after navigation
+  }
 
   const filteredGenres = genres.filter((genre) => genre.name.toLowerCase().includes(genreSearchQuery.toLowerCase()))
 
@@ -313,16 +328,40 @@ export function Header({ onNavigate }: HeaderProps) {
     setIsMobileMenuOpen(false)
   }
 
+  const handleGenreSelect = (genre: { id: number; name: string }) => {
+    setSelectedGenres((prevSelected) => {
+      const newSelected = prevSelected.includes(genre.id)
+        ? prevSelected.filter((id) => id !== genre.id)
+        : [...prevSelected, genre.id]
+
+      console.log("Genre selection updated:", newSelected)
+      return newSelected
+    })
+  }
+
+  const handleCountrySelect = (country: { iso_3166_1: string; english_name: string; native_name: string }) => {
+    setSelectedCountries((prevSelected) => {
+      const newSelected = prevSelected.includes(country.iso_3166_1)
+        ? prevSelected.filter((code) => code !== country.iso_3166_1)
+        : [...prevSelected, country.iso_3166_1]
+
+      console.log(`Header: Country selection updated: ${country.english_name} (${country.iso_3166_1})`, newSelected)
+      return newSelected
+    })
+  }
+
   return (
     <>
       <header ref={headerRef} className={`header ${scrolled ? "header-scrolled" : ""}`}>
         <div className="left">
           <nav className="nav-bar desktop-nav">
-            <button onClick={() => {
-              onNavigate("home")
-              // Scroll to top smoothly
-              window.scrollTo({ top: 0, behavior: 'smooth' })
-            }} className="nav-link">
+            <button
+              onClick={() => {
+                onNavigate("home")
+                window.scrollTo({ top: 0, behavior: "smooth" })
+              }}
+              className="nav-link"
+            >
               Home
             </button>
             <div className="nav-link-dropdown" ref={genreDropdownRef}>
@@ -409,12 +448,16 @@ export function Header({ onNavigate }: HeaderProps) {
                 </div>
               )}
             </div>
-            <button onClick={() => onNavigate("actors")} className="nav-link">
+            <button
+              onClick={() => {
+                onNavigate("actors")
+                window.scrollTo({ top: 0, behavior: "smooth" })
+              }}
+              className="nav-link"
+            >
               Actors
             </button>
           </nav>
-        </div>
-        <div className="right">
           <div className="search-wrapper desktop-search" ref={searchInputRef}>
             <Search className="search-icon" />
             <input
@@ -436,11 +479,11 @@ export function Header({ onNavigate }: HeaderProps) {
                     >
                       {movie.poster_path && (
                         <img
-                          src={getImageUrl(movie.poster_path, "w92") || "./mau.jpg"}
+                          src={getImageUrl(movie.poster_path, "w92") || "/placeholder.svg"}
                           alt={movie.title || movie.name}
                           className="suggestion-image"
                           onError={(e) => {
-                            e.currentTarget.src = "./mau.jpg"
+                            e.currentTarget.src = "/placeholder.png"
                           }}
                         />
                       )}
@@ -453,14 +496,34 @@ export function Header({ onNavigate }: HeaderProps) {
               </div>
             )}
           </div>
+        </div>
+        <div className="right">
           <nav className="nav-bar desktop-nav">
-            <button onClick={() => onNavigate("movies")} className="nav-link">
+            <button
+              onClick={() => {
+                onNavigate("movies")
+                window.scrollTo({ top: 0, behavior: "smooth" })
+              }}
+              className="nav-link"
+            >
               Movies
             </button>
-            <button onClick={() => onNavigate("series")} className="nav-link">
+            <button
+              onClick={() => {
+                onNavigate("series")
+                window.scrollTo({ top: 0, behavior: "smooth" })
+              }}
+              className="nav-link"
+            >
               Series
             </button>
-            <button onClick={() => onNavigate("animation")} className="nav-link">
+            <button
+              onClick={() => {
+                onNavigate("animation")
+                window.scrollTo({ top: 0, behavior: "smooth" })
+              }}
+              className="nav-link"
+            >
               Animation
             </button>
             <div className="nav-link-dropdown" ref={loginDropdownRef}>
@@ -500,149 +563,168 @@ export function Header({ onNavigate }: HeaderProps) {
           <X className="close-icon" />
         </button>
         <nav className="mobile-nav-bar">
-          <button onClick={() => {
-            handleNavigateAndClose("home")
-            window.scrollTo({ top: 0, behavior: 'smooth' })
-          }} className="mobile-nav-link">
-            Home
-          </button>
-          <div className="mobile-nav-dropdown">
-            <button
-              className="mobile-nav-link dropdown-trigger"
-              onClick={() => {
-                setShowGenreDropdown(!showGenreDropdown)
-                setShowCountryDropdown(false)
-                setShowLoginDropdown(false)
-                setShowSearchSuggestions(false)
-              }}
-              aria-expanded={showGenreDropdown}
-            >
-              Genre <ChevronDown className={`chevron-icon ${showGenreDropdown ? "open" : ""}`} />
-            </button>
-            {showGenreDropdown && (
-              <div className="dropdown-content mobile-dropdown-override">
-                <button className="mobile-dropdown-back-button" onClick={() => setShowGenreDropdown(false)}>
-                  <ChevronDown className="chevron-icon open" /> Back
+          {!showLoginDropdown && !showGenreDropdown && !showCountryDropdown && (
+            <>
+              <button
+                onClick={() => {
+                  handleNavigateAndClose("home")
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
+                className="mobile-nav-link"
+              >
+                Home
+              </button>
+
+              <div className="mobile-nav-dropdown">
+                <button
+                  className="mobile-nav-link dropdown-trigger"
+                  onClick={() => {
+                    setShowGenreDropdown(!showGenreDropdown)
+                    setShowCountryDropdown(false)
+                    setShowLoginDropdown(false)
+                    setShowSearchSuggestions(false)
+                  }}
+                  aria-expanded={showGenreDropdown}
+                >
+                  Genre <ChevronDown className={`chevron-icon ${showGenreDropdown ? "open" : ""}`} />
                 </button>
+              </div>
+
+              <div className="mobile-nav-dropdown">
+                <button
+                  className="mobile-nav-link dropdown-trigger"
+                  onClick={() => {
+                    setShowCountryDropdown(!showCountryDropdown)
+                    setShowGenreDropdown(false)
+                    setShowLoginDropdown(false)
+                    setShowSearchSuggestions(false)
+                  }}
+                  aria-expanded={showCountryDropdown}
+                >
+                  Country <ChevronDown className={`chevron-icon ${showCountryDropdown ? "open" : ""}`} />
+                </button>
+              </div>
+
+              <button onClick={() => handleNavigateAndClose("actors")} className="mobile-nav-link">
+                Actors
+              </button>
+
+              <button
+                onClick={() => {
+                  handleNavigateAndClose("movies")
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
+                className="mobile-nav-link"
+              >
+                Movies
+              </button>
+              <button
+                onClick={() => {
+                  handleNavigateAndClose("series")
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
+                className="mobile-nav-link"
+              >
+                Series
+              </button>
+              <button
+                onClick={() => {
+                  handleNavigateAndClose("animation")
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
+                className="mobile-nav-link"
+              >
+                Animation
+              </button>
+            </>
+          )}
+
+          {showGenreDropdown && (
+            <div className="dropdown-content genre-dropdown mobile-dropdown-override">
+              <button className="mobile-dropdown-back-button" onClick={() => setShowGenreDropdown(false)}>
+                <ChevronDown className="chevron-icon open" /> Back
+              </button>
+              <div className="genre-search-container">
+                <Search className="search-icon" />
                 <input
                   type="text"
                   placeholder="Search genres..."
-                  className="dropdown-search-input"
                   value={genreSearchQuery}
                   onChange={(e) => setGenreSearchQuery(e.target.value)}
-                  onKeyDown={handleGenreSearchSubmit}
-                  onClick={(e) => e.stopPropagation()}
+                  className="genre-search-input"
                 />
-                <div className="mobile-dropdown-items-grid">
-                  {filteredGenres.length > 0 ? (
-                    filteredGenres.map((genre) => (
-                      <button
-                        key={genre.id}
-                        className={`dropdown-item ${selectedGenres.includes(genre.id) ? "selected" : ""}`}
-                        onClick={() => handleGenreClick(genre.id)}
-                      >
-                        {genre.name}
-                        {selectedGenres.includes(genre.id) && <Check className="check-icon" />}
-                      </button>
-                    ))
-                  ) : (
-                    <div className="no-results">No genres found.</div>
-                  )}
-                </div>
               </div>
-            )}
-          </div>
+              <div className="genre-grid">
+                {filteredGenres.map((genre) => (
+                  <button key={genre.id} className="genre-item" onClick={() => handleGenreSelect(genre)}>
+                    {genre.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-          <div className="mobile-nav-dropdown">
-            <button
-              className="mobile-nav-link dropdown-trigger"
-              onClick={() => {
-                setShowCountryDropdown(!showCountryDropdown)
-                setShowGenreDropdown(false)
-                setShowLoginDropdown(false)
-                setShowSearchSuggestions(false)
-              }}
-              aria-expanded={showCountryDropdown}
-            >
-              Country <ChevronDown className={`chevron-icon ${showCountryDropdown ? "open" : ""}`} />
-            </button>
-            {showCountryDropdown && (
-              <div className="dropdown-content mobile-dropdown-override">
-                <button className="mobile-dropdown-back-button" onClick={() => setShowCountryDropdown(false)}>
-                  <ChevronDown className="chevron-icon open" /> Back
-                </button>
+          {showCountryDropdown && (
+            <div className="dropdown-content country-dropdown mobile-dropdown-override">
+              <button className="mobile-dropdown-back-button" onClick={() => setShowCountryDropdown(false)}>
+                <ChevronDown className="chevron-icon open" /> Back
+              </button>
+              <div className="country-search-container">
+                <Search className="search-icon" />
                 <input
                   type="text"
                   placeholder="Search countries..."
-                  className="dropdown-search-input"
                   value={countrySearchQuery}
                   onChange={(e) => setCountrySearchQuery(e.target.value)}
-                  onKeyDown={handleCountrySearchSubmit}
-                  onClick={(e) => e.stopPropagation()}
+                  className="country-search-input"
                 />
-
-                <div className="mobile-dropdown-items-grid">
-                  {filteredCountries.length > 0 ? (
-                    filteredCountries.map((country) => (
-                      <button
-                        key={country.iso_3166_1}
-                        className={`dropdown-item ${selectedCountries.includes(country.iso_3166_1) ? "selected" : ""}`}
-                        onClick={() => handleCountryClick(country.iso_3166_1, country.english_name)}
-                      >
-                        {country.english_name}
-                        {selectedCountries.includes(country.iso_3166_1) && <Check className="check-icon" />}
-                      </button>
-                    ))
-                  ) : (
-                    <div className="no-results">No countries found.</div>
-                  )}
-                </div>
               </div>
-            )}
-          </div>
-
-          <button onClick={() => handleNavigateAndClose("actors")} className="mobile-nav-link">
-            Actors
-          </button>
-
-          <button onClick={() => handleNavigateAndClose("movies")} className="mobile-nav-link">
-            Movies
-          </button>
-          <button onClick={() => handleNavigateAndClose("series")} className="mobile-nav-link">
-            Series
-          </button>
-          <button onClick={() => handleNavigateAndClose("animation")} className="mobile-nav-link">
-            Animation
-          </button>
-
-          <div className="mobile-nav-dropdown">
-            <button
-              className="mobile-nav-link dropdown-trigger"
-              onClick={() => {
-                setShowLoginDropdown(!showLoginDropdown)
-                setShowGenreDropdown(false)
-                setShowCountryDropdown(false)
-                setShowSearchSuggestions(false)
-              }}
-              aria-expanded={showLoginDropdown}
-            >
-              Login/Signup <ChevronDown className={`chevron-icon ${showLoginDropdown ? "open" : ""}`} />
-            </button>
-            {showLoginDropdown && (
-              <div className="dropdown-content login-dropdown mobile-dropdown-override">
-                <button className="mobile-dropdown-back-button" onClick={() => setShowLoginDropdown(false)}>
-                  <ChevronDown className="chevron-icon open" /> Back
-                </button>
-                <button className="dropdown-item login-item" onClick={() => openLoginModal("login")}>
-                  🔑 Login
-                </button>
-                <button className="dropdown-item signup-item" onClick={() => openLoginModal("signup")}>
-                  ✨ Sign Up
-                </button>
+              <div className="country-grid">
+                {filteredCountries.map((country) => (
+                  <button
+                    key={country.iso_3166_1}
+                    className="country-item"
+                    onClick={() => handleCountrySelect(country)}
+                  >
+                    {country.english_name}
+                  </button>
+                ))}
               </div>
-            )}
-          </div>
-          <Bell className="notification-icon mobile-notification-icon" />
+            </div>
+          )}
+
+          {!showGenreDropdown && !showCountryDropdown && (
+            <div className="mobile-nav-dropdown">
+              <button
+                className="mobile-nav-link dropdown-trigger"
+                onClick={() => {
+                  setShowLoginDropdown(!showLoginDropdown)
+                  setShowGenreDropdown(false)
+                  setShowCountryDropdown(false)
+                  setShowSearchSuggestions(false)
+                }}
+                aria-expanded={showLoginDropdown}
+              >
+                Login/Signup <ChevronDown className={`chevron-icon ${showLoginDropdown ? "open" : ""}`} />
+              </button>
+            </div>
+          )}
+
+          {showLoginDropdown && (
+            <div className="dropdown-content login-dropdown mobile-dropdown-override">
+              <button className="mobile-dropdown-back-button" onClick={() => setShowLoginDropdown(false)}>
+                <ChevronDown className="chevron-icon open" /> Back
+              </button>
+              <button className="dropdown-item login-item" onClick={() => openLoginModal("login")}>
+                <LogIn className="login-icon" />
+                Login
+              </button>
+              <button className="dropdown-item signup-item" onClick={() => openLoginModal("signup")}>
+                <UserPlus className="signup-icon" />
+                Sign Up
+              </button>
+            </div>
+          )}
         </nav>
       </div>
 
@@ -650,3 +732,4 @@ export function Header({ onNavigate }: HeaderProps) {
     </>
   )
 }
+

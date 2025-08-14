@@ -107,7 +107,7 @@ export function HeroSection({
             </button>
             <button className="hero-btn secondary" onClick={handleWatchLater}>
               <Clock className="btn-icon" />
-              Watch Later
+              Watch Trailer
             </button>
           </div>
         </div>

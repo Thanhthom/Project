@@ -56,8 +56,13 @@
 }
 
 @media (min-width: 768px) {
+  
   .sort-controls {
-    justify-content: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;  
   }
 }
 

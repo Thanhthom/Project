@@ -136,14 +136,16 @@
 
 .actors-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  /* Reduced minimum card width from 280px to 220px for smaller actor images */
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 24px;
   margin-bottom: 32px;
 }
 
 @media (max-width: 640px) {
   .actors-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    /* Reduced minimum card width from 250px to 200px for smaller mobile actor images */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
   }
 }
@@ -155,7 +157,6 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   border: 1px solid #374151;
-  width: 320px;
 }
 
 .actor-card:hover {
@@ -291,7 +292,8 @@
   cursor: pointer;
   transition: transform 0.2s ease;
   text-align: center;
-  width: 60px;
+  /* Reduced width from 60px to 50px for smaller known-for posters */
+  width: 50px;
 }
 
 .known-for-item:hover {
@@ -299,8 +301,9 @@
 }
 
 .known-for-poster {
-  width: 60px;
-  height: 90px;
+  /* Reduced poster size from 60x90px to 50x75px */
+  width: 50px;
+  height: 75px;
   object-fit: cover;
   border-radius: 4px;
   margin-bottom: 4px;
@@ -434,6 +437,7 @@
   }
 }
 
+/* Responsive adjustments */
 @media (max-width: 640px) {
   .actors-header {
     gap: 16px;

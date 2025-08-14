@@ -255,7 +255,7 @@
 }
 
 .load-more-button {
-  background: #ff5252;;
+  background: #ff5252;
   color: white;
   border: none;
   padding: 12px 32px;
@@ -340,8 +340,13 @@
   opacity: 1;
 }
 
-.animation-page .badge.type {
-  background: #ff5252;
+.badge.type {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-weight: 600;
+}
+.animation-page {
+  background: black;
   color: white;
   font-weight: 600;
 }

@@ -21,8 +21,6 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
 
   const fetchAnimations = async (page: number, sort: string, order: string, type: string) => {
     try {
-      console.log(`🔍 AnimationPage: Fetching animations: page=${page}, sort=${sort}, order=${order}, type=${type}`)
-
       let url = ""
       const animationGenreId = 16 // Animation genre ID
 
@@ -167,7 +165,6 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
   }
 
   const handleMediaTypeChange = (newMediaType: "all" | "movie" | "tv") => {
-    console.log(`🔄 AnimationPage: Changing media type: ${newMediaType}`)
     setMediaType(newMediaType)
   }
   if (error) {
