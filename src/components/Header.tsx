@@ -89,7 +89,7 @@ export function Header({ onNavigate }: HeaderProps) {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
+      setScrolled(window.scrollY > 50)
     }
 
     // handleScroll()

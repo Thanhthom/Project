@@ -1,6 +1,6 @@
 .hero-section {
   position: relative;
-  height: 500px;
+  height: 700px;
   width: 100%;
   overflow: hidden;
   font-family: "Segoe UI", sans-serif;
@@ -231,7 +231,8 @@
 .hero-dots {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 8px;
   margin-top: 20px;
 }
 

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Header } from "./components/Header"
+import { Footer } from "./components/Footer"
 import { HomePage } from "./pages/HomePage"
 import { DetailPage } from "./pages/DetailPage"
 import { SearchPage } from "./pages/SearchPage"
@@ -53,7 +54,6 @@ function App() {
     if (page !== "country-results") setCurrentCountryCodes(null)
     if (page !== "actor-results") setCurrentActorIds(null)
 
-
     if (page === "detail") {
       console.log("App: Setting detail ID to:", param as string)
       setCurrentDetailId(param as string)
@@ -80,7 +80,7 @@ function App() {
 
       {currentPage === "detail" && currentDetailId && (
         <DetailPage
-          key={currentDetailId} 
+          key={currentDetailId}
           id={currentDetailId}
           onNavigateToDetail={(id) => handleNavigate("detail", id)}
         />
@@ -117,11 +117,10 @@ function App() {
       {currentPage === "series" && <SeriesPage onNavigateToDetail={(id) => handleNavigate("detail", id)} />}
 
       {currentPage === "animation" && <AnimationPage onNavigateToDetail={(id) => handleNavigate("detail", id)} />}
+
+      <Footer onNavigate={handleNavigate} />
     </div>
   )
 }
 
 export default App
-
-
-
