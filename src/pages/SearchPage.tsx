@@ -30,7 +30,6 @@ export function SearchPage({ searchQuery, onNavigateToDetail }: SearchPageProps)
         const results = await fetchSearchMovies(searchQuery)
         setSearchResults(results)
       } catch (err: any) {
-        console.error("Error fetching search results:", err)
         setError(err.message || "Failed to fetch search results.")
       } finally {
         setLoading(false)

@@ -41,10 +41,11 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
       setError(null)
       try {
         const { results, total_pages } = await fetchSeries(currentPage, sortBy, sortOrder)
+        const limitedResults = results.slice(0, 18)
         if (currentPage === 1) {
-          setSeries(results)
+          setSeries(limitedResults)
         } else {
-          setSeries((prevSeries) => [...prevSeries, ...results])
+          setSeries((prevSeries) => [...prevSeries, ...limitedResults])
         }
         setTotalPages(total_pages)
         console.log(` SeriesPage: Series loaded: ${results.length} series, total pages: ${total_pages}`)
@@ -71,6 +72,7 @@ export function SeriesPage({ onNavigateToDetail, initialPage = 1 }: SeriesPagePr
       title: seriesItem.name || seriesItem.title || "Unknown Title",
       imageUrl: getImageUrl(seriesItem.poster_path || "", "w300"),
       releaseInfo: formatDate(seriesItem.first_air_date || seriesItem.release_date || ""),
+      rating: seriesItem.vote_average ? Number(seriesItem.vote_average.toFixed(1)) : 0,
       type: "series" as const,
       isNew: !!seriesItem.vote_average && seriesItem.vote_average > 8,
       isHot: !!seriesItem.popularity && seriesItem.popularity > 1000,

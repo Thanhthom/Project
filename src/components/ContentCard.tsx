@@ -13,7 +13,7 @@ interface ContentCardProps {
   onClick: () => void
   mediaType?: "movie" | "tv"
   id: string
-  rating?: number
+  rating?: number    
   duration?: string
 }
 
@@ -25,8 +25,8 @@ export function ContentCard({
   isNew,
   isHot,
   onClick,
-  rating = 4.2,
-  duration = "2h 15m",
+  rating,                  
+  duration,
 }: ContentCardProps) {
   const [isFavorite, setIsFavorite] = useState(false)
   const handleCardClick = (e: React.MouseEvent) => {
@@ -46,11 +46,11 @@ export function ContentCard({
     <div onClick={handleCardClick} className="content-card">
       <div className="card-image-container">
         <img
-          src={imageUrl || "./mau.jpg"}
+          src={imageUrl || "./notfilm.jpg"}
           alt={title}
           className="card-image"
           onError={(e) => {
-            e.currentTarget.src = "./mau.jpg"
+            e.currentTarget.src = "./notfilm.jpg"
           }}
         />
         <div className="card-overlay">
@@ -88,5 +88,3 @@ export function ContentCard({
     </div>
   )
 }
-
-

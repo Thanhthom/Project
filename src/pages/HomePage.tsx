@@ -80,7 +80,6 @@ export function HomePage({ onNavigateToDetail }: HomePageProps) {
   }
 
   const handleNavigateToDetail = (id: string) => {
-    console.log("🏠 HomePage: Navigating to detail page with ID:", id)
     onNavigateToDetail(id)
   }
 
@@ -91,6 +90,7 @@ export function HomePage({ onNavigateToDetail }: HomePageProps) {
       ? `${formatRuntime(movie.runtime)} | ${formatDate(movie.release_date || movie.first_air_date || "")}`
       : formatDate(movie.release_date || movie.first_air_date || ""),
     type: movie.title ? ("movie" as const) : ("series" as const),
+    rating: movie.vote_average ? Number(movie.vote_average.toFixed(1)) : 0,
     isNew: !!movie.vote_average && movie.vote_average > 8,
     isHot: !!movie.popularity && movie.popularity > 1000,
     id: movie.id.toString(),

@@ -22,7 +22,7 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
   const fetchAnimations = async (page: number, sort: string, order: string, type: string) => {
     try {
       let url = ""
-      const animationGenreId = 16 // Animation genre ID
+      const animationGenreId = 16 
 
       if (type === "movie") {
         url = `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_API_KEY}&page=${page}&sort_by=${sort}.${order}&with_genres=${animationGenreId}&include_adult=false`
@@ -30,7 +30,6 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
         const sortField = sort === "release_date" ? "first_air_date" : sort
         url = `https://api.themoviedb.org/3/discover/tv?api_key=${import.meta.env.VITE_API_KEY}&page=${page}&sort_by=${sortField}.${order}&with_genres=${animationGenreId}&include_adult=false`
       } else {
-        // For "all", we'll fetch both movies and TV shows and combine them
         const [movieResponse, tvResponse] = await Promise.all([
           fetch(
             `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_API_KEY}&page=${page}&sort_by=${sort}.${order}&with_genres=${animationGenreId}&include_adult=false`,
@@ -46,11 +45,9 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
 
         const [movieData, tvData] = await Promise.all([movieResponse.json(), tvResponse.json()])
 
-        // Add media type identifier to each item
         const moviesWithType = movieData.results.map((item: any) => ({ ...item, media_type: "movie" }))
         const tvWithType = tvData.results.map((item: any) => ({ ...item, media_type: "tv" }))
 
-        // Combine and sort results
         const combined = [...moviesWithType, ...tvWithType]
         const sortedResults = combined.sort((a, b) => {
           let aValue, bValue
@@ -69,10 +66,8 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
 
           return order === "desc" ? bValue - aValue : aValue - bValue
         })
-
-        console.log(`✅ AnimationPage: Combined results: ${sortedResults.length} items`)
         return {
-          results: sortedResults.slice(0, 20), // Limit to 20 items per page
+          results: sortedResults.slice(0, 18), 
           total_pages: Math.max(movieData.total_pages, tvData.total_pages),
         }
       }
@@ -80,17 +75,12 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
       const response = await fetch(url)
       if (!response.ok) throw new Error(`Failed to fetch animations: ${response.statusText}`)
       const data = await response.json()
-
-      // Add media type identifier for single type requests
       const resultsWithType = data.results.map((item: any) => ({
         ...item,
         media_type: type === "tv" ? "tv" : "movie",
       }))
-
-      console.log(`✅ AnimationPage: Fetched ${resultsWithType.length} animations`)
       return { results: resultsWithType, total_pages: data.total_pages }
     } catch (error) {
-      console.error("❌ AnimationPage: Error fetching animations:", error)
       throw error
     }
   }
@@ -107,9 +97,7 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
           setAnimations((prevAnimations) => [...prevAnimations, ...results])
         }
         setTotalPages(total_pages)
-        console.log(`✅ AnimationPage: Animations loaded: ${results.length} items`)
       } catch (err: any) {
-        console.error("❌ AnimationPage: Error loading animations:", err)
         setError(err.message || "Failed to load animations.")
       } finally {
         setLoading(false)
@@ -119,43 +107,36 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
     loadAnimations()
   }, [currentPage, sortBy, sortOrder, mediaType])
 
-  // Reset to page 1 when sort or media type changes
   useEffect(() => {
     setCurrentPage(1)
     setAnimations([])
   }, [sortBy, sortOrder, mediaType])
 
   const convertToContentCard = (animation: MediaItem) => {
-    // Determine if it's a movie or TV show
     const isMovie = animation.title || (animation as any).media_type === "movie"
-    const isTv = animation.name || (animation as any).media_type === "tv"
+    // const isTv = animation.name || (animation as any).media_type === "tv"
 
     const cardData = {
       title: animation.title || animation.name || "Unknown Title",
       imageUrl: getImageUrl(animation.poster_path || "", "w300"),
       releaseInfo: formatDate(animation.release_date || animation.first_air_date || ""),
       type: isMovie ? ("movie" as const) : ("series" as const),
+      rating: Number((animation.vote_average || 0).toFixed(1)),
       isNew: !!animation.vote_average && animation.vote_average > 8,
       isHot: !!animation.popularity && animation.popularity > 1000,
       id: animation.id.toString(),
       mediaType: isMovie ? ("movie" as const) : ("tv" as const),
     }
-
-    console.log(
-      `🎬 AnimationPage: Converting animation - ID: ${animation.id}, Title: ${cardData.title}, Type: ${cardData.mediaType}`,
-    )
     return cardData
   }
 
   const handleLoadMore = () => {
     if (currentPage < totalPages && !loading) {
-      console.log(`📄 AnimationPage: Loading more animations: page ${currentPage + 1}`)
       setCurrentPage((prevPage) => prevPage + 1)
     }
   }
 
   const handleSortChange = (newSortBy: "popularity" | "release_date" | "vote_average") => {
-    console.log(`🔄 AnimationPage: Changing sort: ${newSortBy}`)
     if (newSortBy === sortBy) {
       setSortOrder(sortOrder === "desc" ? "asc" : "desc")
     } else {
@@ -204,7 +185,7 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
               className={`type-button ${mediaType === "tv" ? "active" : ""}`}
               onClick={() => handleMediaTypeChange("tv")}
             >
-              TV Shows
+              Series
             </button>
           </div>
           <div className="sort-controls">
@@ -238,17 +219,11 @@ export function AnimationPage({ onNavigateToDetail, initialPage = 1 }: Animation
               const cardData = convertToContentCard(animation)
               const mediaPrefix = cardData.mediaType === "tv" ? "tv" : "movie"
               const finalId = `${mediaPrefix}-${cardData.id}`
-
-              console.log(
-                `🔗 AnimationPage: Rendering card - Original ID: ${animation.id}, Final ID: ${finalId}, Type: ${cardData.mediaType}`,
-              )
-
               return (
                 <ContentCard
-                  key={`animation-${cardData.id}-${index}`} // Unique key with index
+                  key={`animation-${cardData.id}-${index}`}
                   {...cardData}
                   onClick={() => {
-                    console.log(`🎯 AnimationPage: Clicked animation - Navigating to: ${finalId}`)
                     onNavigateToDetail(finalId)
                   }}
                 />

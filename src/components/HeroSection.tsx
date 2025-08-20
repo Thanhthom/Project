@@ -40,7 +40,7 @@ export function HeroSection({
   const backgroundImage =
     movie.backdrop_path && !imageError
       ? getImageUrl(movie.backdrop_path, "w1280")
-      : "./mau.jpg?height=700&width=1920"
+      : "./notfilm.jpg?height=700&width=1920"
 
   const handleImageError = () => {
     setImageError(true)
@@ -63,7 +63,7 @@ export function HeroSection({
   return (
     <section className="hero-section">
       <img
-        src={backgroundImage || "./mau.jpg"}
+        src={backgroundImage || "./notfilm.jpg"}
         alt={title}
         className="hero-background"
         onError={handleImageError}

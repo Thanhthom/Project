@@ -41,12 +41,15 @@ export function MoviesPage({ onNavigateToDetail, initialPage = 1 }: MoviesPagePr
       setError(null)
       try {
         const { results, total_pages } = await fetchMovies(currentPage, sortBy, sortOrder)
+        const limitedResults = results.slice(0, 18)
+
         if (currentPage === 1) {
-          setMovies(results)
+          setMovies(limitedResults)
         } else {
-          setMovies((prevMovies) => [...prevMovies, ...results])
+          setMovies((prevMovies) => [...prevMovies, ...limitedResults])
         }
         setTotalPages(total_pages)
+
         console.log(` MoviesPage: Movies loaded: ${results.length} movies, total pages: ${total_pages}`)
       } catch (err: any) {
         console.error("MoviesPage: Error loading movies:", err)
@@ -69,6 +72,7 @@ export function MoviesPage({ onNavigateToDetail, initialPage = 1 }: MoviesPagePr
       title: movie.title || movie.name || "Unknown Title",
       imageUrl: getImageUrl(movie.poster_path || "", "w300"),
       releaseInfo: formatDate(movie.release_date || movie.first_air_date || ""),
+      rating: movie.vote_average ? Number(movie.vote_average.toFixed(1)) : 0,
       type: "movie" as const,
       isNew: !!movie.vote_average && movie.vote_average > 8,
       isHot: !!movie.popularity && movie.popularity > 1000,
@@ -102,7 +106,7 @@ export function MoviesPage({ onNavigateToDetail, initialPage = 1 }: MoviesPagePr
       <main className="movies-page">
         <div className="movies-header"></div>
         <div className="movies-grid">
-          {Array.from({ length: 20 }).map((_, index) => (
+          {Array.from({ length: 18 }).map((_, index) => (
             <ContentCardSkeleton key={index} />
           ))}
         </div>

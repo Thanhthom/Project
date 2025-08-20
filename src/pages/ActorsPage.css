@@ -144,7 +144,6 @@
 
 @media (max-width: 640px) {
   .actors-grid {
-    /* Reduced minimum card width from 250px to 200px for smaller mobile actor images */
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
   }
@@ -437,7 +436,6 @@
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 640px) {
   .actors-header {
     gap: 16px;
@@ -449,7 +447,7 @@
   }
 
   .search-input {
-    width: 100%;
+    width: 50%;
   }
 
   .selected-actors-bar {

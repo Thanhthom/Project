@@ -1,6 +1,6 @@
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
-import { Search, Menu, Bell, ChevronDown, Check, X, LogIn, UserPlus } from "lucide-react" 
+import { Search, Menu, Bell, ChevronDown, Check, X, LogIn, UserPlus } from "lucide-react"
 import { fetchMovieGenres, fetchSearchMovies, getImageUrl } from "../config/api"
 import type { MediaItem } from "../types/movie"
 import { LoginModal } from "./LoginModal"
@@ -89,10 +89,10 @@ export function Header({ onNavigate }: HeaderProps) {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
+      setScrolled(window.scrollY > 20)
     }
 
-    // handleScroll()
+    handleScroll()
     window.addEventListener("scroll", handleScroll, { passive: true })
 
     const loadGenres = async () => {
@@ -103,6 +103,7 @@ export function Header({ onNavigate }: HeaderProps) {
       }))
       setGenres(genresArray)
     }
+
     const loadCountries = async () => {
       const fetchedCountries = await fetchCountries()
       setCountries(fetchedCountries)
@@ -235,7 +236,7 @@ export function Header({ onNavigate }: HeaderProps) {
         setSelectedGenres([])
         setShowGenreDropdown(false)
         setGenreSearchQuery("")
-        setIsMobileMenuOpen(false) // Close mobile menu after navigation
+        setIsMobileMenuOpen(false) 
       }
     }
   }
@@ -260,7 +261,7 @@ export function Header({ onNavigate }: HeaderProps) {
         setSelectedCountries([])
         setShowCountryDropdown(false)
         setCountrySearchQuery("")
-        setIsMobileMenuOpen(false) // Close mobile menu after navigation
+        setIsMobileMenuOpen(false) 
       }
     }
   }
@@ -283,7 +284,7 @@ export function Header({ onNavigate }: HeaderProps) {
       setSearchQuery("")
       setSearchSuggestions([])
       setShowSearchSuggestions(false)
-      setIsMobileMenuOpen(false) // Close mobile menu after navigation
+      setIsMobileMenuOpen(false) 
     }
   }
 
@@ -292,7 +293,7 @@ export function Header({ onNavigate }: HeaderProps) {
     setSearchQuery("")
     setSearchSuggestions([])
     setShowSearchSuggestions(false)
-    setIsMobileMenuOpen(false) // Close mobile menu after navigation
+    setIsMobileMenuOpen(false) 
   }
 
   const filteredGenres = genres.filter((genre) => genre.name.toLowerCase().includes(genreSearchQuery.toLowerCase()))
@@ -328,24 +329,20 @@ export function Header({ onNavigate }: HeaderProps) {
     setIsMobileMenuOpen(false)
   }
 
-  const handleGenreSelect = (genre: { id: number; name: string }) => {
+  const handleGenreSelect = (genreId: number) => {
     setSelectedGenres((prevSelected) => {
-      const newSelected = prevSelected.includes(genre.id)
-        ? prevSelected.filter((id) => id !== genre.id)
-        : [...prevSelected, genre.id]
-
-      console.log("Genre selection updated:", newSelected)
+      const newSelected = prevSelected.includes(genreId)
+        ? prevSelected.filter((id) => id !== genreId)
+        : [...prevSelected, genreId]
       return newSelected
     })
   }
 
-  const handleCountrySelect = (country: { iso_3166_1: string; english_name: string; native_name: string }) => {
+  const handleCountrySelect = (countryCode: string, countryName: string) => {
     setSelectedCountries((prevSelected) => {
-      const newSelected = prevSelected.includes(country.iso_3166_1)
-        ? prevSelected.filter((code) => code !== country.iso_3166_1)
-        : [...prevSelected, country.iso_3166_1]
-
-      console.log(`Header: Country selection updated: ${country.english_name} (${country.iso_3166_1})`, newSelected)
+      const newSelected = prevSelected.includes(countryCode)
+        ? prevSelected.filter((code) => code !== countryCode)
+        : [...prevSelected, countryCode]
       return newSelected
     })
   }
@@ -354,6 +351,19 @@ export function Header({ onNavigate }: HeaderProps) {
     <>
       <header ref={headerRef} className={`header ${scrolled ? "header-scrolled" : ""}`}>
         <div className="left">
+          <div className="logo-container">
+            <button
+              onClick={() => {
+                onNavigate("home")
+                window.scrollTo({ top: 0, behavior: "smooth" })
+              }}
+              className="logo-button"
+            >
+              <div className="logo-text">
+                <span className="logo-sub">SubMovies</span>
+              </div>
+            </button>
+          </div>
           <nav className="nav-bar desktop-nav">
             <button
               onClick={() => {
@@ -479,11 +489,11 @@ export function Header({ onNavigate }: HeaderProps) {
                     >
                       {movie.poster_path && (
                         <img
-                          src={getImageUrl(movie.poster_path, "w92") || "/placeholder.svg"}
+                          src={getImageUrl(movie.poster_path, "w92") || "./mau.jpg"}
                           alt={movie.title || movie.name}
                           className="suggestion-image"
                           onError={(e) => {
-                            e.currentTarget.src = "/placeholder.png"
+                            e.currentTarget.src = "./mau.jpg"
                           }}
                         />
                       )}
@@ -590,6 +600,58 @@ export function Header({ onNavigate }: HeaderProps) {
                 </button>
               </div>
 
+              {/* <div className="mobile-dropdown">
+                <button
+                  className="mobile-dropdown-trigger"
+                  onClick={() => {
+                    setShowGenreDropdown(!showGenreDropdown)
+                    setShowCountryDropdown(false)
+                    setGenreSearchQuery("")
+                    setCountrySearchQuery("")
+                  }}
+                >
+                  Genre <ChevronDown className={`chevron-icon ${showGenreDropdown ? "open" : ""}`} />
+                </button>
+
+
+                {showGenreDropdown && (
+                    <div className="mobile-dropdown-content">
+                      <input
+                        type="text"
+                        placeholder="Search genres..."
+                        className="mobile-dropdown-search-input"
+                        value={genreSearchQuery}
+                        onChange={(e) => setGenreSearchQuery(e.target.value)}
+                      />
+                      {filteredGenres.length > 0 ? (
+                        filteredGenres.map((genre) => (
+                    <button
+                        key={genre.id}
+                        className={`mobile-dropdown-item ${selectedGenres.includes(genre.id) ? "selected" : ""}`}
+                        onClick={() => {
+                        const updated = selectedGenres.includes(genre.id)
+                        ? selectedGenres.filter(g => g !== genre.id)
+                        : [...selectedGenres, genre.id]
+
+
+                          setSelectedGenres(updated)
+                          const query = updated.join(",")
+                          onNavigate("genre-results", [query])
+                          setShowGenreDropdown(false)
+                          }}
+                >
+                {genre.name}
+                {selectedGenres.includes(genre.id) && <Check className="check-icon" />}
+                </button>
+                ))
+                ) : (
+                <div className="no-results">No genres found.</div>
+                )}
+                </div>
+                )}</div>
+ */}
+
+
               <div className="mobile-nav-dropdown">
                 <button
                   className="mobile-nav-link dropdown-trigger"
@@ -651,13 +713,19 @@ export function Header({ onNavigate }: HeaderProps) {
                   placeholder="Search genres..."
                   value={genreSearchQuery}
                   onChange={(e) => setGenreSearchQuery(e.target.value)}
+                  onKeyDown={handleGenreSearchSubmit}
                   className="genre-search-input"
                 />
               </div>
               <div className="genre-grid">
                 {filteredGenres.map((genre) => (
-                  <button key={genre.id} className="genre-item" onClick={() => handleGenreSelect(genre)}>
+                  <button
+                    key={genre.id}
+                    className={`genre-item ${selectedGenres.includes(genre.id) ? "selected" : ""}`}
+                    onClick={() => handleGenreSelect(genre.id)}
+                  >
                     {genre.name}
+                    {selectedGenres.includes(genre.id) && <Check className="check-icon" />}
                   </button>
                 ))}
               </div>
@@ -676,6 +744,7 @@ export function Header({ onNavigate }: HeaderProps) {
                   placeholder="Search countries..."
                   value={countrySearchQuery}
                   onChange={(e) => setCountrySearchQuery(e.target.value)}
+                  onKeyDown={handleCountrySearchSubmit}
                   className="country-search-input"
                 />
               </div>
@@ -683,10 +752,11 @@ export function Header({ onNavigate }: HeaderProps) {
                 {filteredCountries.map((country) => (
                   <button
                     key={country.iso_3166_1}
-                    className="country-item"
-                    onClick={() => handleCountrySelect(country)}
+                    className={`country-item ${selectedCountries.includes(country.iso_3166_1) ? "selected" : ""}`}
+                    onClick={() => handleCountrySelect(country.iso_3166_1, country.english_name)}
                   >
                     {country.english_name}
+                    {selectedCountries.includes(country.iso_3166_1) && <Check className="check-icon" />}
                   </button>
                 ))}
               </div>
@@ -710,6 +780,21 @@ export function Header({ onNavigate }: HeaderProps) {
             </div>
           )}
 
+          {selectedGenres.length > 0 && (
+            <button
+              className="apply-button"
+              onClick={() => {
+                onNavigate("genre-results", selectedGenres);
+                setSelectedGenres([]);
+                setIsMobileMenuOpen(false);
+                setShowGenreDropdown(false);
+              }}
+            >
+              Apply
+            </button>
+          )}
+
+
           {showLoginDropdown && (
             <div className="dropdown-content login-dropdown mobile-dropdown-override">
               <button className="mobile-dropdown-back-button" onClick={() => setShowLoginDropdown(false)}>
@@ -732,4 +817,3 @@ export function Header({ onNavigate }: HeaderProps) {
     </>
   )
 }
-

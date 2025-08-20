@@ -19,7 +19,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <h3 className="footer-logo">SubMovies</h3>
             <p className="footer-description">
               Discover and explore thousands of movies, TV series, and animations. Your ultimate entertainment
-              destination.
+              destination. We provide a smooth viewing experience with high-quality subtitles, fast streaming, and completely free access.
             </p>
             <div className="social-links">
               <a href="#" className="social-link" aria-label="Facebook">
@@ -32,11 +32,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
                 </svg>
               </a>
-              <a href="#" className="social-link" aria-label="Instagram">
+              {/* <a href="#" className="social-link" aria-label="Instagram">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.057-1.645.069-4.849.069-3.204 0-3.584-.012-4.849-.07-4.358-.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                 </svg>
-              </a>
+              </a> */}
               <a href="#" className="social-link" aria-label="YouTube">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
@@ -45,7 +45,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          {/* Navigation Links */}
           <div className="footer-section">
             <h4 className="footer-title">Browse</h4>
             <ul className="footer-links">
@@ -61,7 +60,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </li>
               <li>
                 <button onClick={() => handleNavigate("series")} className="footer-link">
-                  TV Series
+                  Series
                 </button>
               </li>
               <li>
@@ -76,87 +75,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </li>
             </ul>
           </div>
-
-          {/* Genres */}
-          {/* <div className="footer-section">
-            <h4 className="footer-title">Popular Genres</h4>
-            <ul className="footer-links">
-              <li>
-                <a href="#" className="footer-link">
-                  Action
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  Comedy
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  Drama
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  Horror
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  Romance
-                </a>
-              </li>
-            </ul>
-          </div> */}
-
-          {/* Support */}
-          <div className="footer-section">
-            <h4 className="footer-title">Support</h4>
-            <ul className="footer-links">
-              <li>
-                <a href="#" className="footer-link">
-                  Help Center
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  Contact Us
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  Terms of Service
-                </a>
-              </li>
-              <li>
-                <a href="#" className="footer-link">
-                  Cookie Policy
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="footer-bottom">
           <div className="footer-bottom-content">
             <p className="copyright">© 2025 SubMovies. All rights reserved.</p>
-            {/* <div className="footer-bottom-links">
-              <a href="#" className="footer-bottom-link">
-                Privacy
-              </a>
-              <a href="#" className="footer-bottom-link">
-                Terms
-              </a>
-              <a href="#" className="footer-bottom-link">
-                Cookies
-              </a>
-            </div> */}
           </div>
         </div>
       </div>

@@ -29,9 +29,8 @@ export function ActorsPage({ onNavigateToActorResults, onNavigateToDetail }: Act
   const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState("") 
   const [selectedActors, setSelectedActors] = useState<number[]>([])
-
   const fetchActors = async (page: number, query = "") => {
     try {
       const apiKey = import.meta.env.VITE_API_KEY
@@ -42,8 +41,6 @@ export function ActorsPage({ onNavigateToActorResults, onNavigateToDetail }: Act
       } else {
         url = `https://api.themoviedb.org/3/person/popular?api_key=${apiKey}&page=${page}`
       }
-
-      console.log("Fetching actors from URL:", url)
       const response = await fetch(url)
 
       if (!response.ok) {
@@ -51,10 +48,8 @@ export function ActorsPage({ onNavigateToActorResults, onNavigateToDetail }: Act
       }
 
       const data = await response.json()
-      console.log("Actors fetched successfully:", data)
       return { results: data.results, total_pages: data.total_pages }
     } catch (error) {
-      console.error("Error fetching actors:", error)
       throw error
     }
   }
@@ -65,15 +60,16 @@ export function ActorsPage({ onNavigateToActorResults, onNavigateToDetail }: Act
       setError(null)
       try {
         const { results, total_pages } = await fetchActors(currentPage, searchQuery)
+        const limitedResults = results.slice(0, 18)
+
         if (currentPage === 1) {
-          setActors(results)
+          setActors(limitedResults)
         } else {
-          setActors((prevActors) => [...prevActors, ...results])
+          setActors((prevActors) => [...prevActors, ...limitedResults])
         }
         setTotalPages(total_pages)
-        console.log(`Actors loaded: ${results.length} actors, total pages: ${total_pages}`)
+
       } catch (err: any) {
-        console.error("Error loading actors:", err)
         setError(err.message || "Failed to load actors.")
       } finally {
         setLoading(false)
@@ -133,7 +129,7 @@ export function ActorsPage({ onNavigateToActorResults, onNavigateToDetail }: Act
           <h1 className="actors-title">Popular Actors</h1>
         </div>
         <div className="actors-grid">
-          {Array.from({ length: 20 }).map((_, index) => (
+          {Array.from({ length: 18 }).map((_, index) => (
             <div key={index} className="actor-card-skeleton">
               <div className="actor-image-skeleton"></div>
               <div className="actor-info-skeleton">
@@ -201,12 +197,12 @@ export function ActorsPage({ onNavigateToActorResults, onNavigateToDetail }: Act
                     src={
                       actor.profile_path
                         ? getImageUrl(actor.profile_path, "w300")
-                        : "./mau.jpg?height=450&width=300"
+                        : "./Avatar.png?height=450&width=300"
                     }
                     alt={actor.name}
                     className="actor-image"
                     onError={(e) => {
-                      e.currentTarget.src = "./mau.jpg?height=450&width=300"
+                      e.currentTarget.src = "./Avatar.png?height=450&width=300"
                     }}
                   />
                   <div className="actor-overlay">

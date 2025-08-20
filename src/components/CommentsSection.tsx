@@ -34,7 +34,7 @@ export function CommentsSection({ comments }: CommentsSectionProps) {
           <div key={comment.id} className="comment-item">
             <div className="comment-avatar">
               <img
-                src={comment.avatarUrl || "./mau.jpg"}
+                src={comment.avatarUrl || "./notfilm.jpg"}
                 alt={`${comment.author} Avatar`}
                 className="avatar-image"
                 onError={(e) => {
